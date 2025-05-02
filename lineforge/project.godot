@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Lineforge"
+run/main_scene="uid://c6w7f6h5g4k3f"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

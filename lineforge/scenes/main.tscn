@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c6w7f6h5g4k3f"]
 
-[ext_resource type="Script" path="res://scripts/Main.cs" id="1_main_script"] ; Updated ID and path
+[ext_resource type="Script" uid="uid://bw1bo8dj8t48a" path="res://scripts/Main.cs" id="1_main_script"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -22,30 +22,22 @@ grow_vertical = 2
 [node name="TopHBox" type="HBoxContainer" parent="MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.9 ; Allocate most space to top section
+size_flags_stretch_ratio = 0.9
 
 [node name="LeftPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2 ; Left panel width ratio
+size_flags_stretch_ratio = 0.2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/LeftPanel"]
 layout_mode = 2
-horizontal_scroll_mode = 3 ; Disabled
-vertical_scroll_mode = 1 ; Auto
+horizontal_scroll_mode = 3
 
 [node name="LeftPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-# --- Paper Settings ---
-[node name="PaperSettingsLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18 # Make title bigger
-text = "Paper Settings"
-horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2
@@ -61,350 +53,43 @@ text = "Paper Size:"
 [node name="PaperSizeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperSizeGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "A4"
 popup/item_0/id = 0
 popup/item_1/text = "US Letter"
 popup/item_1/id = 1
-# Add more sizes as needed
-
-[node name="PenTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="PenTypeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
-layout_mode = 2
-text = "Pen Type:"
-
-[node name="PenTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-item_count = 2
-selected = 0
-popup/item_0/text = "Sakura"
-popup/item_0/id = 0
-popup/item_1/text = "Brand A"
-popup/item_1/id = 1
-# Add more types as needed
-
-[node name="PenColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="PenColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
-layout_mode = 2
-text = "Pen Color:"
-
-[node name="PenColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(0, 0, 0, 1) # Default black
-
-[node name="PaperColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="PaperColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
-layout_mode = 2
-text = "Paper Color:"
-
-[node name="PaperColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(1, 1, 1, 1) # Default white
-
-# --- Input Section ---
-[node name="InputSectionLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18 # Make title bigger
-text = "Input"
-horizontal_alignment = 1
 
 [node name="HSeparator2" type="HSeparator" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2
 
 [node name="InputModeHBox" type="HBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2
-alignment = 1 # Center align items
-
-[node name="InputModeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
-layout_mode = 2
-text = "Input Mode:"
+alignment = 1
 
 [node name="InputModeImageButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
 layout_mode = 2
 toggle_mode = true
-pressed = true # Default to Image
-text = "Image"
 
 [node name="InputModeCodeButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
-layout_mode = 2
-toggle_mode = true
-text = "Code"
-
-# --- Input Area ---
-[node name="InputAreaVBox" type="VBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
-unique_name_in_owner = true
-layout_mode = 2
-
-# Image Input Trigger
-[node name="SelectImageButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputAreaVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Select Image File..."
-# Visibility controlled by script
-
-# Code Input Area
-[node name="CodeInputTextEdit" type="TextEdit" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputAreaVBox"]
-unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
-placeholder_text = "Paste or type code here..."
-visible = false # Start hidden, controlled by script
-
-[node name="CenterPreview" type="PanelContainer" parent="MainVBox/TopHBox"]
-unique_name_in_owner = true
-layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.6 ; Center preview width ratio
-
-[node name="PreviewTextureRect" type="TextureRect" parent="MainVBox/TopHBox/CenterPreview"]
-unique_name_in_owner = true
-layout_mode = 2
-expand_mode = 1 # Keep Aspect Centered
-stretch_mode = 5 # Keep Aspect Centered
-
-[node name="RightPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.2 ; Right panel width ratio
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/RightPanel"]
-layout_mode = 2
-horizontal_scroll_mode = 3 ; Disabled
-vertical_scroll_mode = 1 ; Auto
-
-[node name="RightPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-# --- Algorithm & Effects ---
-[node name="AlgoFXLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Algorithm & Effects"
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-
-# --- Line Contours Section ---
-[node name="LineContoursHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-text = "Line Contours ▼" # Add indicator for collapsibility
-flat = true # Make it look less like a standard button
-alignment = 0 # Left align text
-
-[node name="LineContoursContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-# This container holds the controls for Line Contours
-# Visibility will be toggled by the button's script
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ContourThresholdLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursContent"]
-layout_mode = 2
-text = "Threshold:"
-
-[node name="ContourThresholdSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursContent"]
-layout_mode = 2
-min_value = 0.0
-max_value = 1.0
-step = 0.01
-value = 0.5
-
-# --- Voronoi Section ---
-[node name="VoronoiHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-text = "Voronoi ▼"
-flat = true
-alignment = 0
-
-[node name="VoronoiContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-unique_name_in_owner = true
-layout_mode = 2
-visible = false # Start collapsed
-
-[node name="VoronoiPointsLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiContent"]
-layout_mode = 2
-text = "Points Count:"
-
-[node name="VoronoiPointsSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiContent"]
-layout_mode = 2
-min_value = 10.0
-max_value = 1000.0
-step = 1.0
-value = 100.0
-
-# --- Stippling Section ---
-[node name="StipplingHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-text = "Stippling ▼"
-flat = true
-alignment = 0
-
-[node name="StipplingContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-unique_name_in_owner = true
-layout_mode = 2
-visible = false # Start collapsed
-
-[node name="StipplingDensityLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/StipplingContent"]
-layout_mode = 2
-text = "Density:"
-
-[node name="StipplingDensitySlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/StipplingContent"]
-layout_mode = 2
-min_value = 0.0
-max_value = 1.0
-step = 0.01
-value = 0.5
-
-# --- Pixelate Section ---
-[node name="PixelateHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-text = "Pixelate ▼"
-flat = true
-alignment = 0
-
-[node name="PixelateContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-unique_name_in_owner = true
-layout_mode = 2
-visible = false # Start collapsed
-
-[node name="PixelateSizeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PixelateContent"]
-layout_mode = 2
-text = "Pixel Size:"
-
-[node name="PixelateSizeSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PixelateContent"]
-layout_mode = 2
-min_value = 1.0
-max_value = 50.0
-step = 1.0
-value = 10.0
-
-[node name="AssistantButton" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-text = "Assistant (Coming Soon)"
-disabled = true
-
-# --- Text Tool ---
-[node name="TextToolLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Text Tool"
-horizontal_alignment = 1
-
-[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-
-[node name="TextContentGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="TextContentLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextContentGrid"]
-layout_mode = 2
-text = "Content:"
-
-[node name="TextContentLineEdit" type="LineEdit" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextContentGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Enter text..."
-
-[node name="FontTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="FontTypeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/FontTypeGrid"]
-layout_mode = 2
-text = "Font:"
-
-[node name="FontTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/FontTypeGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-# Add font options later
-
-[node name="SizeGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="SizeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/SizeGrid"]
-layout_mode = 2
-text = "Size:"
-
-[node name="SizeSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/SizeGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = 1.0
-max_value = 1000.0
-value = 12.0
-
-[node name="PositionGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-columns = 4
-
-[node name="PositionLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
-layout_mode = 2
-text = "Position:"
-
-[node name="PositionXLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
-layout_mode = 2
-text = "X:"
-
-[node name="PositionXSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 10000.0
-step = 0.1
-
-[node name="PositionYLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
-layout_mode = 2
-text = "Y:"
-
-[node name="PositionYSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 10000.0
-step = 0.1
-
-[node name="RotationGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
-layout_mode = 2
-columns = 2
-
-[node name="RotationLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/RotationGrid"]
-layout_mode = 2
-text = "Rotation (°):"
-
-[node name="RotationSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/RotationGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = -360.0
-max_value = 360.0
-step = 0.1
-allow_greater = true
-allow_lesser = true
+size_flags_stretch_ratio = 0.6
+toggle_mode = true
+text = "Select Image File..."
 
 [node name="BottomBar" type="PanelContainer" parent="MainVBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-size_flags_vertical = 8 ; Push to bottom
-size_flags_stretch_ratio = 0.1 ; Allocate less space to bottom bar
+size_flags_vertical = 8
+size_flags_stretch_ratio = 0.1
 
 [node name="BottomBarContent" type="HBoxContainer" parent="MainVBox/BottomBar"]
 layout_mode = 2
-alignment = 1 ; Center align items
+alignment = 1
 
 [node name="ExportLabel" type="Label" parent="MainVBox/BottomBar/BottomBarContent"]
 layout_mode = 2
@@ -432,12 +117,193 @@ layout_mode = 2
 layout_mode = 2
 text = "Rotate Canvas"
 
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PenTypeGrid#PenTypeLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Pen Type:"
+
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PenTypeGrid#PenTypeOptionButton" type="OptionButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 2
+popup/item_0/text = "Sakura"
+popup/item_0/id = 0
+popup/item_1/text = "Brand A"
+popup/item_1/id = 1
+
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PenColorGrid#PenColorLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Pen Color:"
+
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PenColorGrid#PenColorPickerButton" type="ColorPickerButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PaperColorGrid#PaperColorLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Paper Color:"
+
+[node name="MainVBox_TopHBox_LeftPanel_ScrollContainer_LeftPanelContent_PaperColorGrid#PaperColorPickerButton" type="ColorPickerButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+color = Color(1, 1, 1, 1)
+
+[node name="MainVBox_TopHBox_CenterPreview#PreviewTextureRect" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+expand_mode = 1
+
+[node name="MainVBox_TopHBox_RightPanel#ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 3
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer#RightPanelContent" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_LineContoursContent#ContourThresholdLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_LineContoursContent#ContourThresholdSlider" type="HSlider" parent="."]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#VoronoiContent" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_VoronoiContent#VoronoiPointsSlider" type="HSlider" parent="."]
+layout_mode = 2
+min_value = 10.0
+max_value = 1000.0
+value = 100.0
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#StipplingContent" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_StipplingContent#StipplingDensitySlider" type="HSlider" parent="."]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#PixelateContent" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PixelateContent#PixelateSizeSlider" type="HSlider" parent="."]
+layout_mode = 2
+min_value = 1.0
+max_value = 50.0
+value = 10.0
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#AssistantButton" type="Button" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+disabled = true
+text = "Text Tool"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#TextContentGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_TextContentGrid#TextContentLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Content:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_TextContentGrid#TextContentLineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter text..."
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#FontTypeGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_FontTypeGrid#FontTypeLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Font:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_FontTypeGrid#FontTypeOptionButton" type="OptionButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_SizeGrid#SizeLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Size:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_SizeGrid#SizeSpinBox" type="SpinBox" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1000.0
+value = 12.0
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#PositionGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 4
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PositionGrid#PositionLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Position:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PositionGrid#PositionXLabel" type="Label" parent="."]
+layout_mode = 2
+text = "X:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PositionGrid#PositionXSpinBox" type="SpinBox" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PositionGrid#PositionYLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Y:"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_PositionGrid#PositionYSpinBox" type="SpinBox" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent#RotationGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_RotationGrid#RotationLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Rotation (°):"
+
+[node name="MainVBox_TopHBox_RightPanel_ScrollContainer_RightPanelContent_RotationGrid#RotationSpinBox" type="SpinBox" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -360.0
+max_value = 360.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
 [node name="ImageFileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
-title = "Open an Image File"
+title = "Open a File"
 size = Vector2i(600, 400)
 ok_button_text = "Open"
-file_mode = 0 # Open a single file
-access = 2 # Filesystem
-filters = PackedStringArray("*.png ; PNG Images", "*.jpg ; JPG Images", "*.svg ; SVG Images")
-# This node is controlled entirely via script, visibility doesn't matter here
+file_mode = 0

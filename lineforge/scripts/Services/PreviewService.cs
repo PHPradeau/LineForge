@@ -92,6 +92,11 @@ namespace LineForge.Services
             UpdatePreviewTexture();
         }
 
+        public Image GetCurrentImage()
+        {
+            return _currentImage?.Duplicate();
+        }
+
         private void ApplyPaperColor(Image image, Color paperColor)
         {
             for (int x = 0; x < image.GetWidth(); x++)
