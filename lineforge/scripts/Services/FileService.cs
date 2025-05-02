@@ -7,74 +7,89 @@ namespace LineForge.Services
     public class FileService
     {
         private readonly PreviewService _previewService;
+        private readonly CodeVisualizer _codeVisualizer;
+        private readonly FileDialog _fileDialog;
 
         public FileService(PreviewService previewService)
         {
             _previewService = previewService;
+            _codeVisualizer = new CodeVisualizer();
+            _fileDialog = new FileDialog
+            {
+                Access = FileDialog.AccessEnum.Filesystem,
+                FileMode = FileDialog.FileModeEnum.OpenFile
+            };
+
+            ConnectSignals();
         }
 
-        public void LoadImage(string filePath)
+        private void ConnectSignals()
         {
-            try
-            {
-                var image = Image.LoadFromFile(filePath);
-                if (image != null)
-                {
-                    _previewService.SetInputImage(image);
-                }
-                else
-                {
-                    GD.PrintErr($"Failed to load image: {filePath}");
-                }
-            }
-            catch (Exception e)
-            {
-                GD.PrintErr($"Error loading image: {e.Message}");
-            }
+            _fileDialog.FileSelected += HandleFileSelected;
         }
 
-        public void LoadCode(string filePath)
+        public void ShowFileDialog(bool isImageMode)
         {
-            try
-            {
-                string code = File.ReadAllText(filePath);
-                // TODO: Parse code and convert to image/preview
-                GD.Print($"Code loaded: {code.Length} characters");
-            }
-            catch (Exception e)
-            {
-                GD.PrintErr($"Error loading code: {e.Message}");
-            }
-        }
-
-        public async void ShowFileDialog(bool isImageMode)
-        {
-            var fileDialog = new FileDialog();
-            fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
-            fileDialog.Access = FileDialog.AccessEnum.Filesystem;
-            
             if (isImageMode)
             {
-                fileDialog.Filters = new string[] { "*.png", "*.jpg", "*.jpeg", "*.svg" };
+                _fileDialog.Filters = new[] { "*.png, *.jpg, *.jpeg, *.bmp" };
+                _fileDialog.Title = "Open Image File";
             }
             else
             {
-                fileDialog.Filters = new string[] { "*.txt", "*.cs", "*.js", "*.py" };
+                _fileDialog.Filters = new[] { "*.cs, *.py, *.js, *.ts" };
+                _fileDialog.Title = "Open Code File";
             }
+            
+            _fileDialog.Show();
+        }
 
-            fileDialog.FileSelected += (string path) =>
+        private void HandleFileSelected(string path)
+        {
+            try
             {
-                if (isImageMode)
+                if (IsImageFile(path))
                 {
-                    LoadImage(path);
+                    LoadImageFile(path);
                 }
-                else
+                else if (IsCodeFile(path))
                 {
-                    LoadCode(path);
+                    LoadCodeFile(path);
                 }
-            };
+            }
+            catch (Exception e)
+            {
+                GD.PrintErr($"Error loading file: {e.Message}");
+            }
+        }
 
-            fileDialog.Show();
+        private void LoadImageFile(string path)
+        {
+            var image = Image.LoadFromFile(path);
+            if (image != null)
+            {
+                _previewService.SetInputImage(image);
+            }
+        }
+
+        private void LoadCodeFile(string path)
+        {
+            var code = File.ReadAllText(path);
+            var language = Path.GetExtension(path).TrimStart('.').ToLower();
+            var codeImage = _codeVisualizer.CreateCodeImage(code, language);
+            _previewService.SetInputImage(codeImage);
+        }
+
+        private bool IsImageFile(string path)
+        {
+            var ext = Path.GetExtension(path).ToLower();
+            return ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp";
+        }
+
+        private bool IsCodeFile(string path)
+        {
+            var ext = Path.GetExtension(path).ToLower();
+            return ext == ".cs" || ext == ".py" || ext == ".js" || ext == ".ts";
         }
     }
 }

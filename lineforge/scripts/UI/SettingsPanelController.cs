@@ -1,5 +1,6 @@
 using Godot;
 using LineForge.Models;
+using System.Linq;
 
 namespace LineForge.UI
 {
@@ -32,7 +33,31 @@ namespace LineForge.UI
             _inputModeCodeButton = inputModeCodeButton;
             _settings = new PaperSettings();
 
+            PopulateDropdowns();
             ConnectSignals();
+        }
+
+        private void PopulateDropdowns()
+        {
+            // Populate paper sizes
+            _paperSizeOptionButton.Clear();
+            foreach (var size in PaperSettings.PaperSizes.Keys.OrderBy(s => s))
+            {
+                _paperSizeOptionButton.AddItem(size);
+            }
+            _paperSizeOptionButton.Selected = _paperSizeOptionButton.GetItemIndex("A4");
+
+            // Populate pen types
+            _penTypeOptionButton.Clear();
+            foreach (var penType in PaperSettings.PenTypes.Keys.OrderBy(p => p))
+            {
+                _penTypeOptionButton.AddItem(penType);
+            }
+            _penTypeOptionButton.Selected = _penTypeOptionButton.GetItemIndex("Sakura Micron");
+
+            // Set default colors
+            _penColorPickerButton.Color = Colors.Black;
+            _paperColorPickerButton.Color = Colors.White;
         }
 
         private void ConnectSignals()

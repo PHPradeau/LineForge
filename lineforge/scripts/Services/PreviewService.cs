@@ -11,6 +11,7 @@ namespace LineForge.Services
         private readonly TextRenderer _textRenderer;
         private Image _currentImage;
         private ImageTexture _previewTexture;
+        private float _currentRotation = 0;
 
         public PreviewService(TextureRect previewTextureRect)
         {
@@ -164,6 +165,58 @@ namespace LineForge.Services
         {
             _previewTexture = ImageTexture.CreateFromImage(_currentImage);
             _previewTextureRect.Texture = _previewTexture;
+        }
+
+        public void RotateCanvas(float degrees)
+        {
+            _currentRotation = (_currentRotation + degrees) % 360;
+            if (_currentImage == null) return;
+
+            // Create a larger image to accommodate rotation
+            var diagonal = (int)Mathf.Sqrt(
+                _currentImage.GetWidth() * _currentImage.GetWidth() +
+                _currentImage.GetHeight() * _currentImage.GetHeight()
+            );
+
+            var rotated = Image.Create(diagonal, diagonal, false, Image.Format.Rgba8);
+            rotated.Fill(Colors.Transparent);
+
+            // Calculate center points
+            var centerNew = new Vector2(diagonal / 2, diagonal / 2);
+            var centerOld = new Vector2(_currentImage.GetWidth() / 2, _currentImage.GetHeight() / 2);
+            var radians = Mathf.DegToRad(_currentRotation);
+
+            // Copy pixels with rotation
+            for (int x = 0; x < _currentImage.GetWidth(); x++)
+            {
+                for (int y = 0; y < _currentImage.GetHeight(); y++)
+                {
+                    var pos = new Vector2(x - centerOld.X, y - centerOld.Y);
+                    var rotatedPos = new Vector2(
+                        pos.X * Mathf.Cos(radians) - pos.Y * Mathf.Sin(radians),
+                        pos.X * Mathf.Sin(radians) + pos.Y * Mathf.Cos(radians)
+                    );
+                    var finalPos = rotatedPos + centerNew;
+
+                    if (finalPos.X >= 0 && finalPos.X < diagonal &&
+                        finalPos.Y >= 0 && finalPos.Y < diagonal)
+                    {
+                        rotated.SetPixel(
+                            (int)finalPos.X,
+                            (int)finalPos.Y,
+                            _currentImage.GetPixel(x, y)
+                        );
+                    }
+                }
+            }
+
+            _currentImage = rotated;
+            UpdatePreviewTexture();
+        }
+
+        public float GetCurrentRotation()
+        {
+            return _currentRotation;
         }
     }
 }
