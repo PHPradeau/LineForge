@@ -173,8 +173,6 @@ size_flags_stretch_ratio = 0.6 ; Center preview width ratio
 unique_name_in_owner = true
 layout_mode = 2
 expand_mode = 1 # Keep Aspect Centered
-layout_mode = 2
-expand_mode = 1 # Keep Aspect Centered
 stretch_mode = 5 # Keep Aspect Centered
 
 [node name="RightPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
@@ -433,3 +431,13 @@ layout_mode = 2
 [node name="RotateCanvasButton" type="Button" parent="MainVBox/BottomBar/BottomBarContent"]
 layout_mode = 2
 text = "Rotate Canvas"
+
+[node name="ImageFileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open an Image File"
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0 # Open a single file
+access = 2 # Filesystem
+filters = PackedStringArray("*.png ; PNG Images", "*.jpg ; JPG Images", "*.svg ; SVG Images")
+# This node is controlled entirely via script, visibility doesn't matter here
