@@ -8,12 +8,14 @@ namespace LineForge.Services
     public class PreviewService
     {
         private readonly TextureRect _previewTextureRect;
+        private readonly TextRenderer _textRenderer;
         private Image _currentImage;
         private ImageTexture _previewTexture;
 
         public PreviewService(TextureRect previewTextureRect)
         {
             _previewTextureRect = previewTextureRect;
+            _textRenderer = new TextRenderer();
             _previewTexture = ImageTexture.Create();
             CreateDefaultImage();
         }
@@ -79,7 +81,7 @@ namespace LineForge.Services
             // Apply pen color (replace black with pen color)
             ApplyPenColor(processedImage, paperSettings.PenColor);
 
-            // TODO: Apply text overlay when implemented
+            // Apply text overlay using TextRenderer
             if (!string.IsNullOrEmpty(textSettings.Content))
             {
                 ApplyTextOverlay(processedImage, textSettings);
@@ -141,13 +143,16 @@ namespace LineForge.Services
 
         private void ApplyTextOverlay(Image image, TextSettings textSettings)
         {
-            // TODO: Implement text rendering
-            // This will require:
-            // 1. Loading the font
-            // 2. Rendering text to an Image
-            // 3. Positioning and rotating the text
-            // 4. Blending with the main image
-            GD.Print("Text overlay not implemented yet");
+            if (string.IsNullOrEmpty(textSettings.Content))
+                return;
+
+            var textImage = _textRenderer.RenderText(
+                textSettings,
+                image.GetWidth(),
+                image.GetHeight()
+            );
+
+            _textRenderer.BlendTextWithImage(image, textImage, Colors.Black);
         }
 
         private void UpdatePreviewTexture()
