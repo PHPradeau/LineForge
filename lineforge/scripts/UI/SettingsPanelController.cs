@@ -41,8 +41,6 @@ namespace LineForge.UI
             _penTypeOptionButton.ItemSelected += OnPenTypeSelected;
             _penColorPickerButton.ColorChanged += OnPenColorChanged;
             _paperColorPickerButton.ColorChanged += OnPaperColorChanged;
-            _inputModeImageButton.Pressed += () => SetInputMode(true);
-            _inputModeCodeButton.Pressed += () => SetInputMode(false);
         }
 
         private void OnPaperSizeSelected(long index)
@@ -69,19 +67,10 @@ namespace LineForge.UI
             OnSettingsChanged?.Invoke(_settings);
         }
 
-        private void SetInputMode(bool isImageMode)
+        public void SetInputMode(bool isImageMode)
         {
-            if (isImageMode)
-            {
-                _inputModeCodeButton.ButtonPressed = false;
-                _inputModeImageButton.ButtonPressed = true;
-            }
-            else
-            {
-                _inputModeImageButton.ButtonPressed = false;
-                _inputModeCodeButton.ButtonPressed = true;
-            }
-            // TODO: Implement input mode change logic
+            _inputModeImageButton.ButtonPressed = isImageMode;
+            _inputModeCodeButton.ButtonPressed = !isImageMode;
         }
     }
 }

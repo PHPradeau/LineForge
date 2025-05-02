@@ -1,35 +1,35 @@
 using Godot;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LineForge.Services
 {
     public class PathGenerator
     {
-        private readonly bool[,] _visited;
         private readonly Image _image;
-        private readonly float _threshold;
+        private bool[,] _visited;
 
-        public PathGenerator(Image image, float threshold = 0.5f)
+        public PathGenerator(Image image)
         {
             _image = image;
-            _threshold = threshold;
-            _visited = new bool[image.GetWidth(), image.GetHeight()];
         }
 
         public List<string> GenerateSVGPaths()
         {
             var paths = new List<string>();
-            ResetVisited();
+            _visited = new bool[_image.GetWidth(), _image.GetHeight()];
 
+            // Find contours and convert them to SVG paths
             for (int y = 0; y < _image.GetHeight(); y++)
             {
                 for (int x = 0; x < _image.GetWidth(); x++)
                 {
-                    if (!_visited[x, y] && IsEdgePixel(x, y))
+                    if (!_visited[x, y] && IsBlackPixel(_image.GetPixel(x, y)))
                     {
                         var contour = TraceContour(x, y);
-                        paths.Add(ContourToSVGPath(contour));
+                        if (contour.Count > 0)
+                        {
+                            paths.Add(ConvertToSVGPath(contour));
+                        }
                     }
                 }
             }
@@ -40,15 +40,20 @@ namespace LineForge.Services
         public List<List<Vector2>> GeneratePlotterPaths()
         {
             var paths = new List<List<Vector2>>();
-            ResetVisited();
+            _visited = new bool[_image.GetWidth(), _image.GetHeight()];
 
+            // Find contours and convert them to plotter coordinates
             for (int y = 0; y < _image.GetHeight(); y++)
             {
                 for (int x = 0; x < _image.GetWidth(); x++)
                 {
-                    if (!_visited[x, y] && IsEdgePixel(x, y))
+                    if (!_visited[x, y] && IsBlackPixel(_image.GetPixel(x, y)))
                     {
-                        paths.Add(TraceContour(x, y));
+                        var contour = TraceContour(x, y);
+                        if (contour.Count > 0)
+                        {
+                            paths.Add(contour);
+                        }
                     }
                 }
             }
@@ -56,25 +61,11 @@ namespace LineForge.Services
             return paths;
         }
 
-        private void ResetVisited()
-        {
-            for (int x = 0; x < _image.GetWidth(); x++)
-                for (int y = 0; y < _image.GetHeight(); y++)
-                    _visited[x, y] = false;
-        }
-
-        private bool IsEdgePixel(int x, int y)
-        {
-            Color pixel = _image.GetPixel(x, y);
-            float brightness = (pixel.R + pixel.G + pixel.B) / 3.0f;
-            return brightness < _threshold;
-        }
-
         private List<Vector2> TraceContour(int startX, int startY)
         {
             var contour = new List<Vector2>();
             var current = new Vector2(startX, startY);
-            var direction = 0; // 0=right, 1=down, 2=left, 3=up
+            var direction = 0; // 0: right, 1: down, 2: left, 3: up
 
             do
             {
@@ -83,30 +74,29 @@ namespace LineForge.Services
 
                 // Moore neighborhood tracing
                 bool found = false;
-                int count = 0;
-                while (!found && count < 8)
+                int initialDirection = direction;
+
+                do
                 {
-                    var next = GetNextPixel(current, direction);
-                    if (IsValidPixel(next) && IsEdgePixel((int)next.X, (int)next.Y))
+                    var next = GetNextPoint(current, direction);
+                    if (IsValidPoint(next) && IsBlackPixel(_image.GetPixel((int)next.X, (int)next.Y)))
                     {
                         current = next;
                         found = true;
+                        break;
                     }
-                    else
-                    {
-                        direction = (direction + 1) % 4;
-                        count++;
-                    }
-                }
+
+                    direction = (direction + 1) % 4;
+                } while (direction != initialDirection);
 
                 if (!found) break;
 
-            } while ((int)current.X != startX || (int)current.Y != startY);
+            } while (current != new Vector2(startX, startY) && contour.Count < 10000); // Safety limit
 
             return contour;
         }
 
-        private Vector2 GetNextPixel(Vector2 current, int direction)
+        private Vector2 GetNextPoint(Vector2 current, int direction)
         {
             return direction switch
             {
@@ -118,25 +108,31 @@ namespace LineForge.Services
             };
         }
 
-        private bool IsValidPixel(Vector2 pos)
+        private bool IsValidPoint(Vector2 point)
         {
-            return pos.X >= 0 && pos.X < _image.GetWidth() &&
-                   pos.Y >= 0 && pos.Y < _image.GetHeight();
+            return point.X >= 0 && point.X < _image.GetWidth() &&
+                   point.Y >= 0 && point.Y < _image.GetHeight();
         }
 
-        private string ContourToSVGPath(List<Vector2> contour)
+        private bool IsBlackPixel(Color color)
         {
-            if (contour.Count == 0) return "";
+            const float threshold = 0.5f;
+            return (color.R + color.G + color.B) / 3.0f < threshold;
+        }
 
-            var path = new StringBuilder();
-            path.Append($"M {contour[0].X} {contour[0].Y}");
+        private string ConvertToSVGPath(List<Vector2> points)
+        {
+            if (points.Count == 0) return "";
 
-            for (int i = 1; i < contour.Count; i++)
+            var path = new System.Text.StringBuilder();
+            path.Append($"M {points[0].X},{points[0].Y}");
+
+            for (int i = 1; i < points.Count; i++)
             {
-                path.Append($" L {contour[i].X} {contour[i].Y}");
+                path.Append($" L {points[i].X},{points[i].Y}");
             }
 
-            path.Append("Z");
+            path.Append(" Z"); // Close the path
             return path.ToString();
         }
     }
