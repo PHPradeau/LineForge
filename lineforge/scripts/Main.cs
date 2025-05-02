@@ -3,21 +3,60 @@ using System;
 
 public partial class Main : Control
 {
-	// Node references - Left Panel
+	// --- Node References ---
+	// We use GetNode<T> in _Ready() for nodes added in the scene file.
+	// Unique names (%) help ensure we get the correct node.
+
+	// Left Panel
 	private OptionButton _paperSizeOptionButton;
 	private OptionButton _penTypeOptionButton;
 	private ColorPickerButton _penColorPickerButton;
 	private ColorPickerButton _paperColorPickerButton;
 	private Button _inputModeImageButton;
 	private Button _inputModeCodeButton;
-	// Add references for InputArea, Right Panel, Center Preview, Bottom Bar later
+	// InputAreaPlaceholder - might need specific nodes later
+
+	// Center Preview
+	private TextureRect _previewTextureRect;
+
+	// Right Panel - Algo/FX
+	private Button _lineContoursHeader;
+	private VBoxContainer _lineContoursContent;
+	private HSlider _contourThresholdSlider;
+
+	private Button _voronoiHeader;
+	private VBoxContainer _voronoiContent;
+	private HSlider _voronoiPointsSlider;
+
+	private Button _stipplingHeader;
+	private VBoxContainer _stipplingContent;
+	private HSlider _stipplingDensitySlider;
+
+	private Button _pixelateHeader;
+	private VBoxContainer _pixelateContent;
+	private HSlider _pixelateSizeSlider;
+
+	// Right Panel - Text Tool
+	private LineEdit _textContentLineEdit;
+	private OptionButton _fontTypeOptionButton;
+	private SpinBox _sizeSpinBox;
+	private SpinBox _positionXSpinBox;
+	private SpinBox _positionYSpinBox;
+	private SpinBox _rotationSpinBox;
+
+	// Bottom Bar
+	private Button _saveSVGButton;
+	private Button _exportGCodeButton;
+	private Button _effects3DButton;
+	private Button _rotateCanvasButton;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GD.Print("Main scene ready.");
 
-		// Get node references using unique names or paths
+		// Get Node References using Unique Names (%)
+		// Left Panel
 		_paperSizeOptionButton = GetNode<OptionButton>("%PaperSizeOptionButton");
 		_penTypeOptionButton = GetNode<OptionButton>("%PenTypeOptionButton");
 		_penColorPickerButton = GetNode<ColorPickerButton>("%PenColorPickerButton");
@@ -25,18 +64,45 @@ public partial class Main : Control
 		_inputModeImageButton = GetNode<Button>("%InputModeImageButton");
 		_inputModeCodeButton = GetNode<Button>("%InputModeCodeButton");
 
-		// Connect signals
-		_paperSizeOptionButton.ItemSelected += _on_paper_size_selected;
-		_penTypeOptionButton.ItemSelected += _on_pen_type_selected;
-		_penColorPickerButton.ColorChanged += _on_pen_color_changed;
-		_paperColorPickerButton.ColorChanged += _on_paper_color_changed;
+		// Center Preview
+		_previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
 
-		// Connect toggle buttons to the same handler, passing an identifier
-		_inputModeImageButton.Toggled += (pressed) => _on_input_mode_toggled(pressed, "Image");
-		_inputModeCodeButton.Toggled += (pressed) => _on_input_mode_toggled(pressed, "Code");
+		// Right Panel - Algo/FX
+		_lineContoursHeader = GetNode<Button>("%LineContoursHeader");
+		_lineContoursContent = GetNode<VBoxContainer>("%LineContoursContent");
+		_contourThresholdSlider = GetNode<HSlider>("%ContourThresholdSlider");
 
-		// Ensure only one toggle is active initially (based on scene setup)
-		_ensure_input_mode_exclusive(_inputModeImageButton.ButtonPressed ? "Image" : "Code");
+		_voronoiHeader = GetNode<Button>("%VoronoiHeader");
+		_voronoiContent = GetNode<VBoxContainer>("%VoronoiContent");
+		_voronoiPointsSlider = GetNode<HSlider>("%VoronoiPointsSlider");
+
+		_stipplingHeader = GetNode<Button>("%StipplingHeader");
+		_stipplingContent = GetNode<VBoxContainer>("%StipplingContent");
+		_stipplingDensitySlider = GetNode<HSlider>("%StipplingDensitySlider");
+
+		_pixelateHeader = GetNode<Button>("%PixelateHeader");
+		_pixelateContent = GetNode<VBoxContainer>("%PixelateContent");
+		_pixelateSizeSlider = GetNode<HSlider>("%PixelateSizeSlider");
+
+		// Right Panel - Text Tool
+		_textContentLineEdit = GetNode<LineEdit>("%TextContentLineEdit");
+		_fontTypeOptionButton = GetNode<OptionButton>("%FontTypeOptionButton");
+		_sizeSpinBox = GetNode<SpinBox>("%SizeSpinBox");
+		_positionXSpinBox = GetNode<SpinBox>("%PositionXSpinBox");
+		_positionYSpinBox = GetNode<SpinBox>("%PositionYSpinBox");
+		_rotationSpinBox = GetNode<SpinBox>("%RotationSpinBox");
+
+		// Bottom Bar
+		_saveSVGButton = GetNode<Button>("%SaveSVGButton");
+		_exportGCodeButton = GetNode<Button>("%ExportGCodeButton");
+		_effects3DButton = GetNode<Button>("%Effects3DButton");
+		_rotateCanvasButton = GetNode<Button>("%RotateCanvasButton");
+
+		// Connect Signals
+		ConnectAlgoFXSignals();
+		ConnectInputSignals();
+		ConnectTextToolSignals();
+		ConnectBottomBarSignals();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -44,87 +110,107 @@ public partial class Main : Control
 	{
 	}
 
-	// --- Signal Handlers ---
-
-	private void _on_paper_size_selected(long index)
+	// --- Signal Connection Methods ---
+	private void ConnectAlgoFXSignals()
 	{
-		string selectedSize = _paperSizeOptionButton.GetItemText((int)index);
-		GD.Print($"Paper size selected: {selectedSize} (Index: {index})");
-		// Add logic to store/use this value
+		_lineContoursHeader.Pressed += () => ToggleSectionVisibility(_lineContoursContent, _lineContoursHeader);
+		_voronoiHeader.Pressed += () => ToggleSectionVisibility(_voronoiContent, _voronoiHeader);
+		_stipplingHeader.Pressed += () => ToggleSectionVisibility(_stipplingContent, _stipplingHeader);
+		_pixelateHeader.Pressed += () => ToggleSectionVisibility(_pixelateContent, _pixelateHeader);
+
+		// Connect sliders value_changed signals (add methods later)
+		_contourThresholdSlider.ValueChanged += OnContourThresholdChanged;
+		_voronoiPointsSlider.ValueChanged += OnVoronoiPointsChanged;
+		_stipplingDensitySlider.ValueChanged += OnStipplingDensityChanged;
+		_pixelateSizeSlider.ValueChanged += OnPixelateSizeChanged;
 	}
 
-	private void _on_pen_type_selected(long index)
+	private void ConnectInputSignals()
 	{
-		string selectedType = _penTypeOptionButton.GetItemText((int)index);
-		GD.Print($"Pen type selected: {selectedType} (Index: {index})");
-		// Add logic to store/use this value
+		_paperSizeOptionButton.ItemSelected += OnPaperSizeSelected;
+		_penTypeOptionButton.ItemSelected += OnPenTypeSelected;
+		_penColorPickerButton.ColorChanged += OnPenColorChanged;
+		_paperColorPickerButton.ColorChanged += OnPaperColorChanged;
+		_inputModeImageButton.Pressed += () => SetInputMode(true);
+		_inputModeCodeButton.Pressed += () => SetInputMode(false);
 	}
 
-	private void _on_pen_color_changed(Color color)
+	private void ConnectTextToolSignals()
 	{
-		GD.Print($"Pen color changed: {color}");
-		// Add logic to store/use this value
+		_textContentLineEdit.TextChanged += OnTextContentChanged;
+		_fontTypeOptionButton.ItemSelected += OnFontTypeSelected;
+		_sizeSpinBox.ValueChanged += OnTextSizeChanged;
+		_positionXSpinBox.ValueChanged += OnTextPositionChanged;
+		_positionYSpinBox.ValueChanged += OnTextPositionChanged;
+		_rotationSpinBox.ValueChanged += OnTextRotationChanged;
 	}
 
-	private void _on_paper_color_changed(Color color)
+	private void ConnectBottomBarSignals()
 	{
-		GD.Print($"Paper color changed: {color}");
-		// Add logic to store/use this value
-		// Maybe update the background color of the preview area?
+		_saveSVGButton.Pressed += OnSaveSVGPressed;
+		_exportGCodeButton.Pressed += OnExportGCodePressed;
+		_effects3DButton.Pressed += OnEffects3DPressed;
+		_rotateCanvasButton.Pressed += OnRotateCanvasPressed;
 	}
 
-	private void _on_input_mode_toggled(bool pressed, string mode)
+	// --- Signal Handler Methods (Placeholders) ---
+
+	// Algo/FX Section Toggling
+	private void ToggleSectionVisibility(VBoxContainer sectionContent, Button headerButton)
 	{
-		GD.Print($"Input mode toggled: {mode}, Pressed: {pressed}");
-		// If a button is pressed, ensure the other is unpressed
-		if (pressed)
+		sectionContent.Visible = !sectionContent.Visible;
+		headerButton.Text = sectionContent.Visible ? headerButton.Text.Replace("▼", "▲") : headerButton.Text.Replace("▲", "▼");
+	}
+
+	// Algo/FX Sliders
+	private void OnContourThresholdChanged(double value) { GD.Print($"Contour Threshold: {value}"); UpdatePreview(); }
+	private void OnVoronoiPointsChanged(double value) { GD.Print($"Voronoi Points: {value}"); UpdatePreview(); }
+	private void OnStipplingDensityChanged(double value) { GD.Print($"Stippling Density: {value}"); UpdatePreview(); }
+	private void OnPixelateSizeChanged(double value) { GD.Print($"Pixelate Size: {value}"); UpdatePreview(); }
+
+	// Input Section
+	private void OnPaperSizeSelected(long index) { GD.Print($"Paper Size selected: index {index}, text {_paperSizeOptionButton.GetItemText((int)index)}"); UpdatePreview(); }
+	private void OnPenTypeSelected(long index) { GD.Print($"Pen Type selected: index {index}, text {_penTypeOptionButton.GetItemText((int)index)}"); UpdatePreview(); }
+	private void OnPenColorChanged(Color color) { GD.Print($"Pen Color changed: {color}"); UpdatePreview(); }
+	private void OnPaperColorChanged(Color color) { GD.Print($"Paper Color changed: {color}"); UpdatePreview(); }
+	private void SetInputMode(bool isImageMode)
+	{
+		GD.Print($"Input Mode set to: {(isImageMode ? "Image" : "Code")}");
+		// Ensure only one button is pressed (basic toggle group logic)
+		if (isImageMode)
 		{
-			_ensure_input_mode_exclusive(mode);
-			// Add logic to show/hide relevant input area (Image upload vs Code TextEdit)
+			_inputModeCodeButton.ButtonPressed = false;
+			_inputModeImageButton.ButtonPressed = true; // Ensure it stays pressed if clicked again
 		}
 		else
 		{
-			// Prevent both buttons from being unpressed simultaneously.
-			// If the user tries to unpress the currently active button,
-			// re-press it.
-			if (mode == "Image" && !_inputModeCodeButton.ButtonPressed)
-			{
-				_inputModeImageButton.ButtonPressed = true;
-			}
-			else if (mode == "Code" && !_inputModeImageButton.ButtonPressed)
-			{
-				_inputModeCodeButton.ButtonPressed = true;
-			}
+			_inputModeImageButton.ButtonPressed = false;
+			_inputModeCodeButton.ButtonPressed = true;
 		}
+		// Add logic here to show/hide relevant input area (e.g., FileDialog or TextEdit)
 	}
 
-	private void _ensure_input_mode_exclusive(string activeMode)
+	// Text Tool
+	private void OnTextContentChanged(string newText) { GD.Print($"Text Content: {newText}"); UpdatePreview(); }
+	private void OnFontTypeSelected(long index) { GD.Print($"Font Type selected: index {index}"); UpdatePreview(); }
+	private void OnTextSizeChanged(double value) { GD.Print($"Text Size: {value}"); UpdatePreview(); }
+	private void OnTextPositionChanged(double value) { GD.Print($"Text Position: X={_positionXSpinBox.Value}, Y={_positionYSpinBox.Value}"); UpdatePreview(); }
+	private void OnTextRotationChanged(double value) { GD.Print($"Text Rotation: {value}"); UpdatePreview(); }
+
+	// Bottom Bar
+	private void OnSaveSVGPressed() { GD.Print("Save SVG pressed"); /* Add save logic */ }
+	private void OnExportGCodePressed() { GD.Print("Export G-code pressed"); /* Add export logic */ }
+	private void OnEffects3DPressed() { GD.Print("3D Effects pressed"); /* Add 3D logic */ }
+	private void OnRotateCanvasPressed() { GD.Print("Rotate Canvas pressed"); /* Add rotation logic */ }
+
+	// --- Core Logic Placeholder ---
+	private void UpdatePreview()
 	{
-		if (activeMode == "Image")
-		{
-			if (_inputModeCodeButton.ButtonPressed)
-			{
-				_inputModeCodeButton.ButtonPressed = false; // Turn off Code button
-			}
-			if (!_inputModeImageButton.ButtonPressed) // Ensure Image button is on if it should be
-            {
-                _inputModeImageButton.ButtonPressed = true;
-            }
-			GD.Print("Input Mode set to Image");
-			// Show Image input controls, hide Code input controls
-		}
-		else // activeMode == "Code"
-		{
-			if (_inputModeImageButton.ButtonPressed)
-			{
-				_inputModeImageButton.ButtonPressed = false; // Turn off Image button
-			}
-			if (!_inputModeCodeButton.ButtonPressed) // Ensure Code button is on if it should be
-            {
-                _inputModeCodeButton.ButtonPressed = true;
-            }
-			GD.Print("Input Mode set to Code");
-			// Show Code input controls, hide Image input controls
-		}
+		GD.Print("Updating Preview...");
+		// This method will eventually:
+		// 1. Get the current input (image or code)
+		// 2. Get all the current settings (paper, pen, algo params, text params)
+		// 3. Run the generation algorithm(s)
+		// 4. Display the result in _previewTextureRect
 	}
 }
