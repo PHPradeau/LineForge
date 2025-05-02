@@ -1,0 +1,359 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6w7f6h5g4k3f"]
+
+[ext_resource type="Script" path="res://scripts/Main.cs" id="1_main_script"] ; Updated ID and path
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main_script")
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopHBox" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.9 ; Allocate most space to top section
+
+[node name="LeftPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2 ; Left panel width ratio
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/LeftPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 3 ; Disabled
+vertical_scroll_mode = 1 ; Auto
+
+[node name="LeftPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+# --- Paper Settings ---
+[node name="PaperSettingsLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18 # Make title bigger
+text = "Paper Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+
+[node name="PaperSizeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PaperSizeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperSizeGrid"]
+layout_mode = 2
+text = "Paper Size:"
+
+[node name="PaperSizeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperSizeGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+selected = 0
+popup/item_0/text = "A4"
+popup/item_0/id = 0
+popup/item_1/text = "US Letter"
+popup/item_1/id = 1
+# Add more sizes as needed
+
+[node name="PenTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PenTypeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
+layout_mode = 2
+text = "Pen Type:"
+
+[node name="PenTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+selected = 0
+popup/item_0/text = "Sakura"
+popup/item_0/id = 0
+popup/item_1/text = "Brand A"
+popup/item_1/id = 1
+# Add more types as needed
+
+[node name="PenColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PenColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
+layout_mode = 2
+text = "Pen Color:"
+
+[node name="PenColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 1) # Default black
+
+[node name="PaperColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PaperColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
+layout_mode = 2
+text = "Paper Color:"
+
+[node name="PaperColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(1, 1, 1, 1) # Default white
+
+# --- Input Section ---
+[node name="InputSectionLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18 # Make title bigger
+text = "Input"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+
+[node name="InputModeHBox" type="HBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+alignment = 1 # Center align items
+
+[node name="InputModeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
+layout_mode = 2
+text = "Input Mode:"
+
+[node name="InputModeImageButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
+layout_mode = 2
+toggle_mode = true
+pressed = true # Default to Image
+text = "Image"
+
+[node name="InputModeCodeButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
+layout_mode = 2
+toggle_mode = true
+text = "Code"
+
+# Placeholder for File Upload / Paste Area
+[node name="InputAreaPlaceholder" type="Panel" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="InputAreaLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputAreaPlaceholder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -11.5
+offset_right = 100.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "File Upload / Paste Area"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterPreview" type="PanelContainer" parent="MainVBox/TopHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6 ; Center preview width ratio
+
+[node name="Label" type="Label" parent="MainVBox/TopHBox/CenterPreview"]
+layout_mode = 2
+text = "Center Preview"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2 ; Right panel width ratio
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/RightPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 3 ; Disabled
+vertical_scroll_mode = 1 ; Auto
+
+[node name="RightPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+# --- Algorithm & Effects Configuration ---
+[node name="AlgoFXLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Algorithm & Effects"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+# Placeholder for Collapsible Sections (Line Contours, Voronoi, etc.)
+# We'll implement collapsibility later with script
+[node name="LineContoursSection" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+[node name="LineContoursButton" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursSection"]
+layout_mode = 2
+text = "Line Contours"
+# Add icon for expand/collapse later
+
+[node name="LineContoursControls" type="PanelContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursSection"]
+# Hidden by default, shown by script
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursSection/LineContoursControls"]
+layout_mode = 2
+text = "Line Contours Settings..."
+
+[node name="VoronoiSection" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+[node name="VoronoiButton" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiSection"]
+layout_mode = 2
+text = "Voronoi"
+
+[node name="VoronoiControls" type="PanelContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiSection"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiSection/VoronoiControls"]
+layout_mode = 2
+text = "Voronoi Settings..."
+
+# Add Stippling, Pixelate sections similarly...
+
+[node name="AssistantButton" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+text = "Assistant (Coming Soon)"
+disabled = true
+
+# --- Text Tool ---
+[node name="TextToolLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Text Tool"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+[node name="TextContentLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+text = "Text Content:"
+
+[node name="TextContentEdit" type="TextEdit" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+placeholder_text = "Enter ASCII text or paste SVG code..."
+
+[node name="TextSettingsGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="FontTypeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+text = "Font Type:"
+
+[node name="FontTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+# Add font options later
+item_count = 1
+selected = 0
+popup/item_0/text = "Default"
+popup/item_0/id = 0
+
+[node name="FontSizeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+text = "Size:"
+
+[node name="FontSizeSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+min_value = 1.0
+max_value = 1000.0
+value = 16.0
+
+[node name="PositionLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+text = "Position (X/Y):"
+
+[node name="PositionHBox" type="HBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+
+[node name="PositionXSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid/PositionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="PositionYSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid/PositionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="RotationLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+text = "Rotation (°):"
+
+[node name="RotationSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextSettingsGrid"]
+layout_mode = 2
+min_value = -360.0
+max_value = 360.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="BottomBar" type="PanelContainer" parent="MainVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 8 ; Push to bottom
+size_flags_stretch_ratio = 0.1 ; Allocate less space to bottom bar
+
+[node name="BottomBarHBox" type="HBoxContainer" parent="MainVBox/BottomBar"]
+layout_mode = 2
+alignment = 1 # Center align buttons
+
+[node name="SaveSVGButton" type="Button" parent="MainVBox/BottomBar/BottomBarHBox"]
+layout_mode = 2
+text = "Save as .SVG"
+
+[node name="ExportGCodeButton" type="Button" parent="MainVBox/BottomBar/BottomBarHBox"]
+layout_mode = 2
+text = "Export G-code"
+
+[node name="Spacer" type="Control" parent="MainVBox/BottomBar/BottomBarHBox"]
+# Add some space between button groups
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="Effects3DButton" type="Button" parent="MainVBox/BottomBar/BottomBarHBox"]
+layout_mode = 2
+text = "3D Effects"
+
+[node name="RotateCanvasButton" type="Button" parent="MainVBox/BottomBar/BottomBarHBox"]
+layout_mode = 2
+text = "Rotate Canvas"
