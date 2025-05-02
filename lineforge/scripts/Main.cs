@@ -8,32 +8,45 @@ namespace LineForge
     public partial class Main : Control
     {
         // Controllers
-        private SettingsPanelController _settingsController;
-        private AlgorithmPanelController _algorithmController;
-        private TextPanelController _textController;
+        private SettingsPanelController _settingsPanelController;
+        private AlgorithmPanelController _algorithmPanelController;
+        private TextPanelController _textPanelController;
 
         // Services
         private PreviewService _previewService;
         private ExportService _exportService;
         private FileService _fileService;
+        private TextRenderer _textRenderer;
+        private Effects3DService _effects3DService;
 
-        // Current Settings
-        private PaperSettings _paperSettings;
-        private AlgorithmSettings _algorithmSettings;
-        private TextSettings _textSettings;
+        // Current Rotation
+        private float _currentRotation = 0;
 
         public override void _Ready()
         {
             GD.Print("Main scene ready.");
-            InitializeControllers();
             InitializeServices();
+            InitializeControllers();
             ConnectSignals();
+        }
+
+        private void InitializeServices()
+        {
+            _previewService = new PreviewService();
+            _textRenderer = new TextRenderer();
+            _fileService = new FileService(_previewService);
+            _exportService = new ExportService(_previewService);
+            _effects3DService = new Effects3DService();
+
+            // Set the preview texture rect
+            var previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
+            _previewService.SetPreviewTextureRect(previewTextureRect);
         }
 
         private void InitializeControllers()
         {
             // Settings Panel
-            _settingsController = new SettingsPanelController(
+            _settingsPanelController = new SettingsPanelController(
                 GetNode<OptionButton>("%PaperSizeOptionButton"),
                 GetNode<OptionButton>("%PenTypeOptionButton"),
                 GetNode<ColorPickerButton>("%PenColorPickerButton"),
@@ -43,24 +56,23 @@ namespace LineForge
             );
 
             // Algorithm Panel
-            var algoSections = new[]
-            {
-                (GetNode<Button>("%LineContoursHeader"), GetNode<VBoxContainer>("%LineContoursContent")),
-                (GetNode<Button>("%VoronoiHeader"), GetNode<VBoxContainer>("%VoronoiContent")),
-                (GetNode<Button>("%StipplingHeader"), GetNode<VBoxContainer>("%StipplingContent")),
-                (GetNode<Button>("%PixelateHeader"), GetNode<VBoxContainer>("%PixelateContent"))
-            };
-
-            _algorithmController = new AlgorithmPanelController(
-                algoSections,
+            _algorithmPanelController = new AlgorithmPanelController(
+                GetNode<Button>("%LineContoursHeader"),
+                GetNode<VBoxContainer>("%LineContoursContent"),
                 GetNode<HSlider>("%ContourThresholdSlider"),
+                GetNode<Button>("%VoronoiHeader"),
+                GetNode<VBoxContainer>("%VoronoiContent"),
                 GetNode<HSlider>("%VoronoiPointsSlider"),
+                GetNode<Button>("%StipplingHeader"),
+                GetNode<VBoxContainer>("%StipplingContent"),
                 GetNode<HSlider>("%StipplingDensitySlider"),
+                GetNode<Button>("%PixelateHeader"),
+                GetNode<VBoxContainer>("%PixelateContent"),
                 GetNode<HSlider>("%PixelateSizeSlider")
             );
 
             // Text Panel
-            _textController = new TextPanelController(
+            _textPanelController = new TextPanelController(
                 GetNode<LineEdit>("%TextContentLineEdit"),
                 GetNode<OptionButton>("%FontTypeOptionButton"),
                 GetNode<SpinBox>("%SizeSpinBox"),
@@ -70,93 +82,63 @@ namespace LineForge
             );
         }
 
-        private void InitializeServices()
-        {
-            _previewService = new PreviewService(GetNode<TextureRect>("%PreviewTextureRect"));
-            _exportService = new ExportService(_previewService);
-            _fileService = new FileService(_previewService);
-
-            // Initialize settings
-            _paperSettings = new PaperSettings();
-            _algorithmSettings = new AlgorithmSettings();
-            _textSettings = new TextSettings();
-        }
-
         private void ConnectSignals()
         {
-            // Connect settings changed events
-            _settingsController.OnSettingsChanged += OnPaperSettingsChanged;
-            _algorithmController.OnAlgorithmSettingsChanged += OnAlgorithmSettingsChanged;
-            _textController.OnTextSettingsChanged += OnTextSettingsChanged;
+            // Connect file dialog buttons
+            GetNode<Button>("%InputModeImageButton").Pressed += () => OnInputModeChanged(true);
+            GetNode<Button>("%InputModeCodeButton").Pressed += () => OnInputModeChanged(false);
 
             // Connect export buttons
-            var saveSVGButton = GetNode<Button>("%SaveSVGButton");
-            var exportGCodeButton = GetNode<Button>("%ExportGCodeButton");
-            var effects3DButton = GetNode<Button>("%Effects3DButton");
-            var rotateCanvasButton = GetNode<Button>("%RotateCanvasButton");
+            GetNode<Button>("%SaveSVGButton").Pressed += () => _exportService.ExportToSVG(
+                _settingsPanelController.GetCurrentSettings(),
+                _algorithmPanelController.GetCurrentSettings(),
+                _textPanelController.GetCurrentSettings()
+            );
 
-            saveSVGButton.Pressed += OnSaveSVGPressed;
-            exportGCodeButton.Pressed += OnExportGCodePressed;
-            effects3DButton.Pressed += OnEffects3DPressed;
-            rotateCanvasButton.Pressed += OnRotateCanvasPressed;
+            GetNode<Button>("%ExportGCodeButton").Pressed += () => _exportService.ExportToGCode(
+                _settingsPanelController.GetCurrentSettings(),
+                _algorithmPanelController.GetCurrentSettings(),
+                _textPanelController.GetCurrentSettings()
+            );
 
-            // Connect input mode buttons
-            var inputModeImageButton = GetNode<Button>("%InputModeImageButton");
-            var inputModeCodeButton = GetNode<Button>("%InputModeCodeButton");
+            // Connect 3D effects button
+            GetNode<Button>("%Effects3DButton").Pressed += () => _exportService.Apply3DEffects();
 
-            inputModeImageButton.Pressed += () => OnInputModeChanged(true);
-            inputModeCodeButton.Pressed += () => OnInputModeChanged(false);
+            // Connect canvas rotation button
+            GetNode<Button>("%RotateCanvasButton").Pressed += OnRotateCanvas;
+
+            // Connect settings changed events
+            _settingsPanelController.OnSettingsChanged += (settings) => UpdatePreview();
+            _algorithmPanelController.OnSettingsChanged += (settings) => UpdatePreview();
+            _textPanelController.OnSettingsChanged += (settings) => UpdatePreview();
         }
 
         private void OnInputModeChanged(bool isImageMode)
         {
-            _settingsController.SetInputMode(isImageMode);
+            _settingsPanelController.SetInputMode(isImageMode);
             _fileService.ShowFileDialog(isImageMode);
         }
 
-        // Event Handlers
-        private void OnPaperSettingsChanged(PaperSettings settings)
+        private void OnRotateCanvas()
         {
-            _paperSettings = settings;
-            UpdatePreview();
-        }
-
-        private void OnAlgorithmSettingsChanged(AlgorithmSettings settings)
-        {
-            _algorithmSettings = settings;
-            UpdatePreview();
-        }
-
-        private void OnTextSettingsChanged(TextSettings settings)
-        {
-            _textSettings = settings;
+            _currentRotation = (_currentRotation + 90) % 360;
+            _previewService.RotatePreview(_currentRotation);
             UpdatePreview();
         }
 
         private void UpdatePreview()
         {
-            _previewService.UpdatePreview(_paperSettings, _algorithmSettings, _textSettings);
-        }
+            var settings = _settingsPanelController.GetCurrentSettings();
+            var algoSettings = _algorithmPanelController.GetCurrentSettings();
+            var textSettings = _textPanelController.GetCurrentSettings();
 
-        // Export Actions
-        private void OnSaveSVGPressed()
-        {
-            _exportService.ExportToSVG(_paperSettings, _algorithmSettings, _textSettings);
-        }
+            _previewService.UpdatePreview(settings, algoSettings);
 
-        private void OnExportGCodePressed()
-        {
-            _exportService.ExportToGCode(_paperSettings, _algorithmSettings, _textSettings);
-        }
-
-        private void OnEffects3DPressed()
-        {
-            _exportService.Apply3DEffects();
-        }
-
-        private void OnRotateCanvasPressed()
-        {
-            _exportService.RotateCanvas(90); // Default 90-degree rotation
+            if (!string.IsNullOrEmpty(textSettings.Content))
+            {
+                var textImage = _textRenderer.RenderText(textSettings);
+                _previewService.ApplyText(textImage, textSettings.Position);
+            }
         }
     }
 }

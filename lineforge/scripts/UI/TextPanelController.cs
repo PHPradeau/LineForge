@@ -14,7 +14,7 @@ namespace LineForge.UI
         private readonly TextSettings _settings;
 
         public delegate void TextSettingsChangedEventHandler(TextSettings settings);
-        public event TextSettingsChangedEventHandler OnTextSettingsChanged;
+        public event TextSettingsChangedEventHandler OnSettingsChanged;
 
         public TextPanelController(
             LineEdit textContentLineEdit,
@@ -32,50 +32,82 @@ namespace LineForge.UI
             _rotationSpinBox = rotationSpinBox;
             _settings = new TextSettings();
 
+            PopulateFonts();
             ConnectSignals();
+            InitializeDefaults();
+        }
+
+        private void PopulateFonts()
+        {
+            _fontTypeOptionButton.Clear();
+            foreach (var font in TextSettings.DefaultFonts)
+            {
+                _fontTypeOptionButton.AddItem(font);
+            }
+            _fontTypeOptionButton.Selected = _fontTypeOptionButton.GetItemIndex("Arial");
         }
 
         private void ConnectSignals()
         {
             _textContentLineEdit.TextChanged += OnTextContentChanged;
-            _fontTypeOptionButton.ItemSelected += OnFontTypeSelected;
+            _fontTypeOptionButton.ItemSelected += OnFontSelected;
             _sizeSpinBox.ValueChanged += OnSizeChanged;
             _positionXSpinBox.ValueChanged += OnPositionChanged;
             _positionYSpinBox.ValueChanged += OnPositionChanged;
             _rotationSpinBox.ValueChanged += OnRotationChanged;
         }
 
+        private void InitializeDefaults()
+        {
+            _sizeSpinBox.Value = _settings.FontSize;
+            _positionXSpinBox.Value = _settings.Position.X;
+            _positionYSpinBox.Value = _settings.Position.Y;
+            _rotationSpinBox.Value = _settings.Rotation;
+        }
+
         private void OnTextContentChanged(string newText)
         {
             _settings.Content = newText;
-            OnTextSettingsChanged?.Invoke(_settings);
+            OnSettingsChanged?.Invoke(_settings);
         }
 
-        private void OnFontTypeSelected(long index)
+        private void OnFontSelected(long index)
         {
-            _settings.FontType = _fontTypeOptionButton.GetItemText((int)index);
-            OnTextSettingsChanged?.Invoke(_settings);
+            _settings.FontName = _fontTypeOptionButton.GetItemText((int)index);
+            OnSettingsChanged?.Invoke(_settings);
         }
 
         private void OnSizeChanged(double value)
         {
-            _settings.Size = value;
-            OnTextSettingsChanged?.Invoke(_settings);
+            _settings.FontSize = (int)value;
+            OnSettingsChanged?.Invoke(_settings);
         }
 
-        private void OnPositionChanged(double _)
+        private void OnPositionChanged(double value)
         {
             _settings.Position = new Vector2(
                 (float)_positionXSpinBox.Value,
                 (float)_positionYSpinBox.Value
             );
-            OnTextSettingsChanged?.Invoke(_settings);
+            OnSettingsChanged?.Invoke(_settings);
         }
 
         private void OnRotationChanged(double value)
         {
-            _settings.Rotation = value;
-            OnTextSettingsChanged?.Invoke(_settings);
+            _settings.Rotation = (float)value;
+            OnSettingsChanged?.Invoke(_settings);
+        }
+
+        public TextSettings GetCurrentSettings()
+        {
+            return _settings;
+        }
+
+        public void UpdatePosition(Vector2 newPosition)
+        {
+            _positionXSpinBox.Value = newPosition.X;
+            _positionYSpinBox.Value = newPosition.Y;
+            // This will trigger OnPositionChanged which will update settings and invoke the event
         }
     }
 }

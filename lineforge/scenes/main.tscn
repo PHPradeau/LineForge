@@ -51,12 +51,6 @@ text = "Paper Size:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 2
-popup/item_0/text = "A4"
-popup/item_0/id = 0
-popup/item_1/text = "US Letter"
-popup/item_1/id = 1
 
 [node name="PenTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2
@@ -70,12 +64,6 @@ text = "Pen Type:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 2
-popup/item_0/text = "Sakura"
-popup/item_0/id = 0
-popup/item_1/text = "Brand A"
-popup/item_1/id = 1
 
 [node name="PenColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2

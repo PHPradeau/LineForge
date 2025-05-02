@@ -5,14 +5,7 @@ namespace LineForge.Models
 {
     public class PaperSettings
     {
-        // Paper properties
-        public string Size { get; set; } = "A4";
-        public string PenType { get; set; } = "Sakura";
-        public Color PenColor { get; set; } = Colors.Black;
-        public Color PaperColor { get; set; } = Colors.White;
-
-        // Standard paper sizes in millimeters (width, height)
-        public static readonly Dictionary<string, Vector2> PaperSizes = new Dictionary<string, Vector2>
+        public static readonly Dictionary<string, Vector2> PaperSizes = new()
         {
             { "A0", new Vector2(841, 1189) },
             { "A1", new Vector2(594, 841) },
@@ -22,25 +15,50 @@ namespace LineForge.Models
             { "A5", new Vector2(148, 210) },
             { "US Letter", new Vector2(215.9f, 279.4f) },
             { "US Legal", new Vector2(215.9f, 355.6f) },
-            { "US Tabloid", new Vector2(279.4f, 431.8f) }
+            { "Tabloid", new Vector2(279.4f, 431.8f) }
         };
 
-        // Pen types with their properties
-        public static readonly Dictionary<string, PenProperties> PenTypes = new Dictionary<string, PenProperties>
+        public static readonly Dictionary<string, PenProperties> PenTypes = new()
         {
-            { "Sakura Micron", new PenProperties { LineWidth = 0.25f, MinPressure = 10, MaxPressure = 100 } },
-            { "Sakura Pigma", new PenProperties { LineWidth = 0.35f, MinPressure = 15, MaxPressure = 120 } },
-            { "Staedtler Fineliner", new PenProperties { LineWidth = 0.3f, MinPressure = 12, MaxPressure = 110 } },
-            { "Faber-Castell Pitt", new PenProperties { LineWidth = 0.4f, MinPressure = 20, MaxPressure = 150 } },
-            { "Uni Pin", new PenProperties { LineWidth = 0.2f, MinPressure = 8, MaxPressure = 90 } },
-            { "Copic Multiliner", new PenProperties { LineWidth = 0.35f, MinPressure = 15, MaxPressure = 130 } }
+            { "Sakura Micron 005", new PenProperties { Width = 0.2f, Pressure = 0.8f } },
+            { "Sakura Micron 01", new PenProperties { Width = 0.25f, Pressure = 0.8f } },
+            { "Sakura Micron 02", new PenProperties { Width = 0.3f, Pressure = 0.8f } },
+            { "Sakura Micron 03", new PenProperties { Width = 0.35f, Pressure = 0.8f } },
+            { "Sakura Micron 04", new PenProperties { Width = 0.4f, Pressure = 0.8f } },
+            { "Sakura Micron 05", new PenProperties { Width = 0.45f, Pressure = 0.8f } },
+            { "Sakura Micron 08", new PenProperties { Width = 0.5f, Pressure = 0.8f } },
+            { "Uni Pin 0.03", new PenProperties { Width = 0.03f, Pressure = 0.7f } },
+            { "Uni Pin 0.05", new PenProperties { Width = 0.05f, Pressure = 0.7f } },
+            { "Uni Pin 0.1", new PenProperties { Width = 0.1f, Pressure = 0.7f } },
+            { "Uni Pin 0.3", new PenProperties { Width = 0.3f, Pressure = 0.7f } },
+            { "Uni Pin 0.5", new PenProperties { Width = 0.5f, Pressure = 0.7f } },
+            { "Uni Pin 0.8", new PenProperties { Width = 0.8f, Pressure = 0.7f } },
+            { "Staedtler 0.05", new PenProperties { Width = 0.05f, Pressure = 0.75f } },
+            { "Staedtler 0.1", new PenProperties { Width = 0.1f, Pressure = 0.75f } },
+            { "Staedtler 0.3", new PenProperties { Width = 0.3f, Pressure = 0.75f } },
+            { "Staedtler 0.5", new PenProperties { Width = 0.5f, Pressure = 0.75f } },
+            { "Staedtler 0.7", new PenProperties { Width = 0.7f, Pressure = 0.75f } }
         };
+
+        public string Size { get; set; } = "A4";
+        public string PenType { get; set; } = "Sakura Micron 01";
+        public Color PenColor { get; set; } = Colors.Black;
+        public Color PaperColor { get; set; } = Colors.White;
+
+        public Vector2 GetSizeInMillimeters()
+        {
+            return PaperSizes.GetValueOrDefault(Size, PaperSizes["A4"]);
+        }
+
+        public PenProperties GetPenProperties()
+        {
+            return PenTypes.GetValueOrDefault(PenType, PenTypes["Sakura Micron 01"]);
+        }
     }
 
     public class PenProperties
     {
-        public float LineWidth { get; set; }  // Line width in millimeters
-        public int MinPressure { get; set; }  // Minimum pressure for the pen (for G-code)
-        public int MaxPressure { get; set; }  // Maximum pressure for the pen (for G-code)
+        public float Width { get; set; }
+        public float Pressure { get; set; }
     }
 }
