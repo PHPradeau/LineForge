@@ -1,216 +1,144 @@
 using Godot;
-using System;
+using LineForge.Models;
+using LineForge.Services;
+using LineForge.UI;
 
 public partial class Main : Control
 {
-	// --- Node References ---
-	// We use GetNode<T> in _Ready() for nodes added in the scene file.
-	// Unique names (%) help ensure we get the correct node.
+    // Controllers
+    private SettingsPanelController _settingsController;
+    private AlgorithmPanelController _algorithmController;
+    private TextPanelController _textController;
 
-	// Left Panel
-	private OptionButton _paperSizeOptionButton;
-	private OptionButton _penTypeOptionButton;
-	private ColorPickerButton _penColorPickerButton;
-	private ColorPickerButton _paperColorPickerButton;
-	private Button _inputModeImageButton;
-	private Button _inputModeCodeButton;
-	// InputAreaPlaceholder - might need specific nodes later
+    // Services
+    private PreviewService _previewService;
+    private ExportService _exportService;
 
-	// Center Preview
-	private TextureRect _previewTextureRect;
+    // Current Settings
+    private PaperSettings _paperSettings;
+    private AlgorithmSettings _algorithmSettings;
+    private TextSettings _textSettings;
 
-	// Right Panel - Algo/FX
-	private Button _lineContoursHeader;
-	private VBoxContainer _lineContoursContent;
-	private HSlider _contourThresholdSlider;
+    public override void _Ready()
+    {
+        GD.Print("Main scene ready.");
+        InitializeControllers();
+        InitializeServices();
+        ConnectSignals();
+    }
 
-	private Button _voronoiHeader;
-	private VBoxContainer _voronoiContent;
-	private HSlider _voronoiPointsSlider;
+    private void InitializeControllers()
+    {
+        // Settings Panel
+        _settingsController = new SettingsPanelController(
+            GetNode<OptionButton>("%PaperSizeOptionButton"),
+            GetNode<OptionButton>("%PenTypeOptionButton"),
+            GetNode<ColorPickerButton>("%PenColorPickerButton"),
+            GetNode<ColorPickerButton>("%PaperColorPickerButton"),
+            GetNode<Button>("%InputModeImageButton"),
+            GetNode<Button>("%InputModeCodeButton")
+        );
 
-	private Button _stipplingHeader;
-	private VBoxContainer _stipplingContent;
-	private HSlider _stipplingDensitySlider;
+        // Algorithm Panel
+        var algoSections = new[]
+        {
+            (GetNode<Button>("%LineContoursHeader"), GetNode<VBoxContainer>("%LineContoursContent")),
+            (GetNode<Button>("%VoronoiHeader"), GetNode<VBoxContainer>("%VoronoiContent")),
+            (GetNode<Button>("%StipplingHeader"), GetNode<VBoxContainer>("%StipplingContent")),
+            (GetNode<Button>("%PixelateHeader"), GetNode<VBoxContainer>("%PixelateContent"))
+        };
 
-	private Button _pixelateHeader;
-	private VBoxContainer _pixelateContent;
-	private HSlider _pixelateSizeSlider;
+        _algorithmController = new AlgorithmPanelController(
+            algoSections,
+            GetNode<HSlider>("%ContourThresholdSlider"),
+            GetNode<HSlider>("%VoronoiPointsSlider"),
+            GetNode<HSlider>("%StipplingDensitySlider"),
+            GetNode<HSlider>("%PixelateSizeSlider")
+        );
 
-	// Right Panel - Text Tool
-	private LineEdit _textContentLineEdit;
-	private OptionButton _fontTypeOptionButton;
-	private SpinBox _sizeSpinBox;
-	private SpinBox _positionXSpinBox;
-	private SpinBox _positionYSpinBox;
-	private SpinBox _rotationSpinBox;
+        // Text Panel
+        _textController = new TextPanelController(
+            GetNode<LineEdit>("%TextContentLineEdit"),
+            GetNode<OptionButton>("%FontTypeOptionButton"),
+            GetNode<SpinBox>("%SizeSpinBox"),
+            GetNode<SpinBox>("%PositionXSpinBox"),
+            GetNode<SpinBox>("%PositionYSpinBox"),
+            GetNode<SpinBox>("%RotationSpinBox")
+        );
+    }
 
-	// Bottom Bar
-	private Button _saveSVGButton;
-	private Button _exportGCodeButton;
-	private Button _effects3DButton;
-	private Button _rotateCanvasButton;
+    private void InitializeServices()
+    {
+        _previewService = new PreviewService(GetNode<TextureRect>("%PreviewTextureRect"));
+        _exportService = new ExportService();
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		GD.Print("Main scene ready.");
+        // Initialize settings
+        _paperSettings = new PaperSettings();
+        _algorithmSettings = new AlgorithmSettings();
+        _textSettings = new TextSettings();
+    }
 
-		// Get Node References using Unique Names (%)
-		// Left Panel
-		_paperSizeOptionButton = GetNode<OptionButton>("%PaperSizeOptionButton");
-		_penTypeOptionButton = GetNode<OptionButton>("%PenTypeOptionButton");
-		_penColorPickerButton = GetNode<ColorPickerButton>("%PenColorPickerButton");
-		_paperColorPickerButton = GetNode<ColorPickerButton>("%PaperColorPickerButton");
-		_inputModeImageButton = GetNode<Button>("%InputModeImageButton");
-		_inputModeCodeButton = GetNode<Button>("%InputModeCodeButton");
+    private void ConnectSignals()
+    {
+        // Connect settings changed events
+        _settingsController.OnSettingsChanged += OnPaperSettingsChanged;
+        _algorithmController.OnAlgorithmSettingsChanged += OnAlgorithmSettingsChanged;
+        _textController.OnTextSettingsChanged += OnTextSettingsChanged;
 
-		// Center Preview
-		_previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
+        // Connect export buttons
+        var saveSVGButton = GetNode<Button>("%SaveSVGButton");
+        var exportGCodeButton = GetNode<Button>("%ExportGCodeButton");
+        var effects3DButton = GetNode<Button>("%Effects3DButton");
+        var rotateCanvasButton = GetNode<Button>("%RotateCanvasButton");
 
-		// Right Panel - Algo/FX
-		_lineContoursHeader = GetNode<Button>("%LineContoursHeader");
-		_lineContoursContent = GetNode<VBoxContainer>("%LineContoursContent");
-		_contourThresholdSlider = GetNode<HSlider>("%ContourThresholdSlider");
+        saveSVGButton.Pressed += OnSaveSVGPressed;
+        exportGCodeButton.Pressed += OnExportGCodePressed;
+        effects3DButton.Pressed += OnEffects3DPressed;
+        rotateCanvasButton.Pressed += OnRotateCanvasPressed;
+    }
 
-		_voronoiHeader = GetNode<Button>("%VoronoiHeader");
-		_voronoiContent = GetNode<VBoxContainer>("%VoronoiContent");
-		_voronoiPointsSlider = GetNode<HSlider>("%VoronoiPointsSlider");
+    // Event Handlers
+    private void OnPaperSettingsChanged(PaperSettings settings)
+    {
+        _paperSettings = settings;
+        UpdatePreview();
+    }
 
-		_stipplingHeader = GetNode<Button>("%StipplingHeader");
-		_stipplingContent = GetNode<VBoxContainer>("%StipplingContent");
-		_stipplingDensitySlider = GetNode<HSlider>("%StipplingDensitySlider");
+    private void OnAlgorithmSettingsChanged(AlgorithmSettings settings)
+    {
+        _algorithmSettings = settings;
+        UpdatePreview();
+    }
 
-		_pixelateHeader = GetNode<Button>("%PixelateHeader");
-		_pixelateContent = GetNode<VBoxContainer>("%PixelateContent");
-		_pixelateSizeSlider = GetNode<HSlider>("%PixelateSizeSlider");
+    private void OnTextSettingsChanged(TextSettings settings)
+    {
+        _textSettings = settings;
+        UpdatePreview();
+    }
 
-		// Right Panel - Text Tool
-		_textContentLineEdit = GetNode<LineEdit>("%TextContentLineEdit");
-		_fontTypeOptionButton = GetNode<OptionButton>("%FontTypeOptionButton");
-		_sizeSpinBox = GetNode<SpinBox>("%SizeSpinBox");
-		_positionXSpinBox = GetNode<SpinBox>("%PositionXSpinBox");
-		_positionYSpinBox = GetNode<SpinBox>("%PositionYSpinBox");
-		_rotationSpinBox = GetNode<SpinBox>("%RotationSpinBox");
+    private void UpdatePreview()
+    {
+        _previewService.UpdatePreview(_paperSettings, _algorithmSettings, _textSettings);
+    }
 
-		// Bottom Bar
-		_saveSVGButton = GetNode<Button>("%SaveSVGButton");
-		_exportGCodeButton = GetNode<Button>("%ExportGCodeButton");
-		_effects3DButton = GetNode<Button>("%Effects3DButton");
-		_rotateCanvasButton = GetNode<Button>("%RotateCanvasButton");
+    // Export Actions
+    private void OnSaveSVGPressed()
+    {
+        _exportService.ExportToSVG(_paperSettings, _algorithmSettings, _textSettings);
+    }
 
-		// Connect Signals
-		ConnectAlgoFXSignals();
-		ConnectInputSignals();
-		ConnectTextToolSignals();
-		ConnectBottomBarSignals();
-	}
+    private void OnExportGCodePressed()
+    {
+        _exportService.ExportToGCode(_paperSettings, _algorithmSettings, _textSettings);
+    }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
+    private void OnEffects3DPressed()
+    {
+        _exportService.Apply3DEffects();
+    }
 
-	// --- Signal Connection Methods ---
-	private void ConnectAlgoFXSignals()
-	{
-		_lineContoursHeader.Pressed += () => ToggleSectionVisibility(_lineContoursContent, _lineContoursHeader);
-		_voronoiHeader.Pressed += () => ToggleSectionVisibility(_voronoiContent, _voronoiHeader);
-		_stipplingHeader.Pressed += () => ToggleSectionVisibility(_stipplingContent, _stipplingHeader);
-		_pixelateHeader.Pressed += () => ToggleSectionVisibility(_pixelateContent, _pixelateHeader);
-
-		// Connect sliders value_changed signals (add methods later)
-		_contourThresholdSlider.ValueChanged += OnContourThresholdChanged;
-		_voronoiPointsSlider.ValueChanged += OnVoronoiPointsChanged;
-		_stipplingDensitySlider.ValueChanged += OnStipplingDensityChanged;
-		_pixelateSizeSlider.ValueChanged += OnPixelateSizeChanged;
-	}
-
-	private void ConnectInputSignals()
-	{
-		_paperSizeOptionButton.ItemSelected += OnPaperSizeSelected;
-		_penTypeOptionButton.ItemSelected += OnPenTypeSelected;
-		_penColorPickerButton.ColorChanged += OnPenColorChanged;
-		_paperColorPickerButton.ColorChanged += OnPaperColorChanged;
-		_inputModeImageButton.Pressed += () => SetInputMode(true);
-		_inputModeCodeButton.Pressed += () => SetInputMode(false);
-	}
-
-	private void ConnectTextToolSignals()
-	{
-		_textContentLineEdit.TextChanged += OnTextContentChanged;
-		_fontTypeOptionButton.ItemSelected += OnFontTypeSelected;
-		_sizeSpinBox.ValueChanged += OnTextSizeChanged;
-		_positionXSpinBox.ValueChanged += OnTextPositionChanged;
-		_positionYSpinBox.ValueChanged += OnTextPositionChanged;
-		_rotationSpinBox.ValueChanged += OnTextRotationChanged;
-	}
-
-	private void ConnectBottomBarSignals()
-	{
-		_saveSVGButton.Pressed += OnSaveSVGPressed;
-		_exportGCodeButton.Pressed += OnExportGCodePressed;
-		_effects3DButton.Pressed += OnEffects3DPressed;
-		_rotateCanvasButton.Pressed += OnRotateCanvasPressed;
-	}
-
-	// --- Signal Handler Methods (Placeholders) ---
-
-	// Algo/FX Section Toggling
-	private void ToggleSectionVisibility(VBoxContainer sectionContent, Button headerButton)
-	{
-		sectionContent.Visible = !sectionContent.Visible;
-		headerButton.Text = sectionContent.Visible ? headerButton.Text.Replace("▼", "▲") : headerButton.Text.Replace("▲", "▼");
-	}
-
-	// Algo/FX Sliders
-	private void OnContourThresholdChanged(double value) { GD.Print($"Contour Threshold: {value}"); UpdatePreview(); }
-	private void OnVoronoiPointsChanged(double value) { GD.Print($"Voronoi Points: {value}"); UpdatePreview(); }
-	private void OnStipplingDensityChanged(double value) { GD.Print($"Stippling Density: {value}"); UpdatePreview(); }
-	private void OnPixelateSizeChanged(double value) { GD.Print($"Pixelate Size: {value}"); UpdatePreview(); }
-
-	// Input Section
-	private void OnPaperSizeSelected(long index) { GD.Print($"Paper Size selected: index {index}, text {_paperSizeOptionButton.GetItemText((int)index)}"); UpdatePreview(); }
-	private void OnPenTypeSelected(long index) { GD.Print($"Pen Type selected: index {index}, text {_penTypeOptionButton.GetItemText((int)index)}"); UpdatePreview(); }
-	private void OnPenColorChanged(Color color) { GD.Print($"Pen Color changed: {color}"); UpdatePreview(); }
-	private void OnPaperColorChanged(Color color) { GD.Print($"Paper Color changed: {color}"); UpdatePreview(); }
-	private void SetInputMode(bool isImageMode)
-	{
-		GD.Print($"Input Mode set to: {(isImageMode ? "Image" : "Code")}");
-		// Ensure only one button is pressed (basic toggle group logic)
-		if (isImageMode)
-		{
-			_inputModeCodeButton.ButtonPressed = false;
-			_inputModeImageButton.ButtonPressed = true; // Ensure it stays pressed if clicked again
-		}
-		else
-		{
-			_inputModeImageButton.ButtonPressed = false;
-			_inputModeCodeButton.ButtonPressed = true;
-		}
-		// Add logic here to show/hide relevant input area (e.g., FileDialog or TextEdit)
-	}
-
-	// Text Tool
-	private void OnTextContentChanged(string newText) { GD.Print($"Text Content: {newText}"); UpdatePreview(); }
-	private void OnFontTypeSelected(long index) { GD.Print($"Font Type selected: index {index}"); UpdatePreview(); }
-	private void OnTextSizeChanged(double value) { GD.Print($"Text Size: {value}"); UpdatePreview(); }
-	private void OnTextPositionChanged(double value) { GD.Print($"Text Position: X={_positionXSpinBox.Value}, Y={_positionYSpinBox.Value}"); UpdatePreview(); }
-	private void OnTextRotationChanged(double value) { GD.Print($"Text Rotation: {value}"); UpdatePreview(); }
-
-	// Bottom Bar
-	private void OnSaveSVGPressed() { GD.Print("Save SVG pressed"); /* Add save logic */ }
-	private void OnExportGCodePressed() { GD.Print("Export G-code pressed"); /* Add export logic */ }
-	private void OnEffects3DPressed() { GD.Print("3D Effects pressed"); /* Add 3D logic */ }
-	private void OnRotateCanvasPressed() { GD.Print("Rotate Canvas pressed"); /* Add rotation logic */ }
-
-	// --- Core Logic Placeholder ---
-	private void UpdatePreview()
-	{
-		GD.Print("Updating Preview...");
-		// This method will eventually:
-		// 1. Get the current input (image or code)
-		// 2. Get all the current settings (paper, pen, algo params, text params)
-		// 3. Run the generation algorithm(s)
-		// 4. Display the result in _previewTextureRect
-	}
+    private void OnRotateCanvasPressed()
+    {
+        _exportService.RotateCanvas(90); // Default 90-degree rotation
+    }
 }
