@@ -46,13 +46,20 @@ namespace LineForge
         private void InitializeControllers()
         {
             // Settings Panel
+            var paperSizeOption = GetNode<OptionButton>("%PaperSizeOptionButton");
+            var penTypeOption = GetNode<OptionButton>("%PenTypeOptionButton");
+            var penColorPicker = GetNode<ColorPickerButton>("%PenColorPickerButton");
+            var paperColorPicker = GetNode<ColorPickerButton>("%PaperColorPickerButton");
+            var inputModeImage = GetNode<Button>("%InputModeImageButton");
+            var inputModeCode = GetNode<Button>("%InputModeCodeButton");
+
             _settingsPanelController = new SettingsPanelController(
-                GetNode<OptionButton>("%PaperSizeOptionButton"),
-                GetNode<OptionButton>("%PenTypeOptionButton"),
-                GetNode<ColorPickerButton>("%PenColorPickerButton"),
-                GetNode<ColorPickerButton>("%PaperColorPickerButton"),
-                GetNode<Button>("%InputModeImageButton"),
-                GetNode<Button>("%InputModeCodeButton")
+                paperSizeOption,
+                penTypeOption,
+                penColorPicker,
+                paperColorPicker,
+                inputModeImage,
+                inputModeCode
             );
 
             // Algorithm Panel
@@ -102,15 +109,18 @@ namespace LineForge
             );
 
             // Connect 3D effects button
-            GetNode<Button>("%Effects3DButton").Pressed += () => _exportService.Apply3DEffects();
+            GetNode<Button>("%Effects3DButton").Pressed += () => _effects3DService.ApplyHeightMap(
+                _previewService.GetPreviewImage(),
+                _settingsPanelController.GetCurrentSettings()
+            );
 
             // Connect canvas rotation button
             GetNode<Button>("%RotateCanvasButton").Pressed += OnRotateCanvas;
 
             // Connect settings changed events
-            _settingsPanelController.OnSettingsChanged += (settings) => UpdatePreview();
-            _algorithmPanelController.OnSettingsChanged += (settings) => UpdatePreview();
-            _textPanelController.OnSettingsChanged += (settings) => UpdatePreview();
+            _settingsPanelController.OnSettingsChanged += (_) => UpdatePreview();
+            _algorithmPanelController.OnSettingsChanged += (_) => UpdatePreview();
+            _textPanelController.OnSettingsChanged += (_) => UpdatePreview();
         }
 
         private void OnInputModeChanged(bool isImageMode)

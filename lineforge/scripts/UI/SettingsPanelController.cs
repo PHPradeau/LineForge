@@ -53,7 +53,7 @@ namespace LineForge.UI
             {
                 _penTypeOptionButton.AddItem(penType);
             }
-            _penTypeOptionButton.Selected = _penTypeOptionButton.GetItemIndex("Sakura Micron");
+            _penTypeOptionButton.Selected = _penTypeOptionButton.GetItemIndex("Sakura Micron 01");
 
             // Set default colors
             _penColorPickerButton.Color = Colors.Black;
