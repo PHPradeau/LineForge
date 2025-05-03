@@ -13,7 +13,7 @@ namespace LineForge.Algorithms
 
         public Image ProcessImage(Image input)
         {
-            var output = Image.Create(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
+            var output = Image.CreateEmpty(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
             
             // Process the image in blocks of pixel_size x pixel_size
             for (int x = 0; x < input.GetWidth(); x += _pixelSize)

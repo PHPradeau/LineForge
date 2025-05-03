@@ -34,8 +34,7 @@ namespace LineForge.Services
         public void ApplyHeightMap(Image sourceImage, PaperSettings settings)
         {
             // Generate height map based on image intensity
-            _currentHeightMap = new Image();
-            _currentHeightMap.Copy(sourceImage);
+            _currentHeightMap = sourceImage.Duplicate();
             _currentHeightMap.Convert(Image.Format.L8); // Convert to grayscale
 
             // Adjust height map based on pen properties
@@ -53,7 +52,7 @@ namespace LineForge.Services
             }
 
             // Update material properties
-            ((StandardMaterial3D)_heightMapMaterial).HeightTexture = ImageTexture.CreateFromImage(_currentHeightMap);
+            ((StandardMaterial3D)_heightMapMaterial).HeightmapTexture = ImageTexture.CreateFromImage(_currentHeightMap);
         }
 
         public void UpdateLighting(Vector3 lightDirection, Color lightColor)

@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace LineForge.Services
 {
@@ -21,7 +22,7 @@ namespace LineForge.Services
             var width = CalculateImageWidth(lines) + 2 * _padding;
             var height = lines.Length * _lineHeight + 2 * _padding;
 
-            var image = Image.Create(width, height, false, Image.Format.Rgba8);
+            var image = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
             image.Fill(Colors.White);
 
             // Create viewport for text rendering

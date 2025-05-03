@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c6w7f6h5g4k3f"]
+[gd_scene load_steps=3 format=3 uid="uid://c6w7f6h5g4k3f"]
 
 [ext_resource type="Script" uid="uid://bw1bo8dj8t48a" path="res://scripts/Main.cs" id="1_main_script"]
+[ext_resource type="Script" uid="uid://55n38wk8s60b" path="res://scripts/Models/PaperSettings.cs" id="2_0wfyh"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -51,6 +52,9 @@ text = "Paper Size:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+expand_icon = true
+allow_reselect = true
+script = ExtResource("2_0wfyh")
 
 [node name="PenTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2
@@ -64,6 +68,8 @@ text = "Pen Type:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+expand_icon = true
+allow_reselect = true
 
 [node name="PenColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
 layout_mode = 2

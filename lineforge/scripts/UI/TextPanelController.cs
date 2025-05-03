@@ -37,6 +37,16 @@ namespace LineForge.UI
             InitializeDefaults();
         }
 
+        private int GetOptionIndexByText(OptionButton optionButton, string text)
+        {
+            for (int i = 0; i < optionButton.ItemCount; i++)
+            {
+                if (optionButton.GetItemText(i) == text)
+                    return i;
+            }
+            return -1;
+        }
+
         private void PopulateFonts()
         {
             _fontTypeOptionButton.Clear();
@@ -44,7 +54,9 @@ namespace LineForge.UI
             {
                 _fontTypeOptionButton.AddItem(font);
             }
-            _fontTypeOptionButton.Selected = _fontTypeOptionButton.GetItemIndex("Arial");
+            // Godot 4.x: Find index by text manually
+            int arialIndex = GetOptionIndexByText(_fontTypeOptionButton, "Arial");
+            if (arialIndex >= 0) _fontTypeOptionButton.Selected = arialIndex;
         }
 
         private void ConnectSignals()

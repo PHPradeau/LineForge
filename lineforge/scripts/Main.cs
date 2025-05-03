@@ -34,15 +34,14 @@ namespace LineForge
         private void InitializeServices()
         {
             GD.Print("Initializing services...");
-            _previewService = new PreviewService();
+            // Get the preview TextureRect node from the scene
+            var previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
+            // Pass the TextureRect to the PreviewService constructor (Godot 4.x style)
+            _previewService = new PreviewService(previewTextureRect);
             _textRenderer = new TextRenderer();
             _fileService = new FileService(_previewService);
             _exportService = new ExportService(_previewService);
             _effects3DService = new Effects3DService();
-
-            // Set the preview texture rect
-            var previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
-            _previewService.SetPreviewTextureRect(previewTextureRect);
             GD.Print("Services initialized.");
         }
 
@@ -123,7 +122,7 @@ namespace LineForge
 
             // Connect 3D effects button
             GetNode<Button>("%Effects3DButton").Pressed += () => _effects3DService.ApplyHeightMap(
-                _previewService.GetPreviewImage(),
+                _previewService.GetCurrentImage(),
                 _settingsPanelController.GetCurrentSettings()
             );
 
@@ -132,7 +131,7 @@ namespace LineForge
 
             // Connect settings changed events
             _settingsPanelController.OnSettingsChanged += (_) => UpdatePreview();
-            _algorithmPanelController.OnSettingsChanged += (_) => UpdatePreview();
+            _algorithmPanelController.OnAlgorithmSettingsChanged += (_) => UpdatePreview();
             _textPanelController.OnSettingsChanged += (_) => UpdatePreview();
         }
 
@@ -144,8 +143,7 @@ namespace LineForge
 
         private void OnRotateCanvas()
         {
-            _currentRotation = (_currentRotation + 90) % 360;
-            _previewService.RotatePreview(_currentRotation);
+            _previewService.RotateCanvas(90);
             UpdatePreview();
         }
 
@@ -155,13 +153,7 @@ namespace LineForge
             var algoSettings = _algorithmPanelController.GetCurrentSettings();
             var textSettings = _textPanelController.GetCurrentSettings();
 
-            _previewService.UpdatePreview(settings, algoSettings);
-
-            if (!string.IsNullOrEmpty(textSettings.Content))
-            {
-                var textImage = _textRenderer.RenderText(textSettings);
-                _previewService.ApplyText(textImage, textSettings.Position);
-            }
+            _previewService.UpdatePreview(settings, algoSettings, textSettings);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Godot;
 using LineForge.Models;
+using System.Collections.Generic;
 
 namespace LineForge.Services
 {
@@ -70,8 +71,7 @@ namespace LineForge.Services
             // Apply rotation if needed
             if (settings.Rotation != 0)
             {
-                var rotatedImage = new Image();
-                rotatedImage.Create(image.GetWidth(), image.GetHeight(), false, Image.Format.Rgba8);
+                var rotatedImage = Image.CreateEmpty(image.GetWidth(), image.GetHeight(), false, Image.Format.Rgba8);
                 
                 var center = new Vector2(image.GetWidth() / 2.0f, image.GetHeight() / 2.0f);
                 var rotation = Mathf.DegToRad(settings.Rotation);

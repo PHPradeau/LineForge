@@ -17,14 +17,14 @@ namespace LineForge.Services
         {
             _previewTextureRect = previewTextureRect;
             _textRenderer = new TextRenderer();
-            _previewTexture = ImageTexture.Create();
+            _previewTexture = new ImageTexture();
             CreateDefaultImage();
         }
 
         private void CreateDefaultImage()
         {
             // Create a white canvas with default size
-            _currentImage = Image.Create(800, 600, false, Image.Format.Rgba8);
+            _currentImage = Image.CreateEmpty(800, 600, false, Image.Format.Rgba8);
             _currentImage.Fill(Colors.White);
             UpdatePreviewTexture();
         }
@@ -152,11 +152,7 @@ namespace LineForge.Services
             if (string.IsNullOrEmpty(textSettings.Content))
                 return;
 
-            var textImage = _textRenderer.RenderText(
-                textSettings,
-                image.GetWidth(),
-                image.GetHeight()
-            );
+            var textImage = _textRenderer.RenderText(textSettings);
 
             _textRenderer.BlendTextWithImage(image, textImage, Colors.Black);
         }
@@ -178,7 +174,7 @@ namespace LineForge.Services
                 _currentImage.GetHeight() * _currentImage.GetHeight()
             );
 
-            var rotated = Image.Create(diagonal, diagonal, false, Image.Format.Rgba8);
+            var rotated = Image.CreateEmpty(diagonal, diagonal, false, Image.Format.Rgba8);
             rotated.Fill(Colors.Transparent);
 
             // Calculate center points

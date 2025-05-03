@@ -46,7 +46,9 @@ namespace LineForge.UI
                 GD.Print($"Adding paper size: {size}");
                 _paperSizeOptionButton.AddItem(size);
             }
-            _paperSizeOptionButton.Selected = _paperSizeOptionButton.GetItemIndex("A4");
+            // Godot 4.x: GetItemIndex(string) does not exist, so find index manually
+            int a4Index = GetOptionIndexByText(_paperSizeOptionButton, "A4");
+            if (a4Index >= 0) _paperSizeOptionButton.Selected = a4Index;
 
             GD.Print("Populating pen type dropdown...");
             _penTypeOptionButton.Clear();
@@ -55,11 +57,23 @@ namespace LineForge.UI
                 GD.Print($"Adding pen type: {penType}");
                 _penTypeOptionButton.AddItem(penType);
             }
-            _penTypeOptionButton.Selected = _penTypeOptionButton.GetItemIndex("Sakura Micron 01");
+            int micronIndex = GetOptionIndexByText(_penTypeOptionButton, "Sakura Micron 01");
+            if (micronIndex >= 0) _penTypeOptionButton.Selected = micronIndex;
 
             // Set default colors
             _penColorPickerButton.Color = Colors.Black;
             _paperColorPickerButton.Color = Colors.White;
+        }
+
+        // Helper to find the index of an item by its text in an OptionButton
+        private int GetOptionIndexByText(OptionButton optionButton, string text)
+        {
+            for (int i = 0; i < optionButton.ItemCount; i++)
+            {
+                if (optionButton.GetItemText(i) == text)
+                    return i;
+            }
+            return -1;
         }
 
         private void ConnectSignals()
@@ -98,6 +112,11 @@ namespace LineForge.UI
         {
             _inputModeImageButton.ButtonPressed = isImageMode;
             _inputModeCodeButton.ButtonPressed = !isImageMode;
+        }
+
+        public PaperSettings GetCurrentSettings()
+        {
+            return _settings;
         }
     }
 }

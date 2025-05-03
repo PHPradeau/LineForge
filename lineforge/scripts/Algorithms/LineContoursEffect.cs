@@ -14,7 +14,7 @@ namespace LineForge.Algorithms
 
         public Image ProcessImage(Image input)
         {
-            var output = Image.Create(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
+            var output = Image.CreateEmpty(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
             
             // Convert to grayscale and detect edges using Sobel operator
             for (int x = 1; x < input.GetWidth() - 1; x++)

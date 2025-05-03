@@ -1,33 +1,53 @@
 using Godot;
 using LineForge.Models;
+using System.Linq;
 
 namespace LineForge.UI
 {
     public class AlgorithmPanelController
     {
-        private readonly Button[] _headers;
-        private readonly VBoxContainer[] _contents;
-        private readonly HSlider _contourThresholdSlider;
-        private readonly HSlider _voronoiPointsSlider;
-        private readonly HSlider _stipplingDensitySlider;
-        private readonly HSlider _pixelateSizeSlider;
+        private Button _lineContoursHeader;
+        private VBoxContainer _lineContoursContent;
+        private HSlider _contourThresholdSlider;
+        private Button _voronoiHeader;
+        private VBoxContainer _voronoiContent;
+        private HSlider _voronoiPointsSlider;
+        private Button _stipplingHeader;
+        private VBoxContainer _stipplingContent;
+        private HSlider _stipplingDensitySlider;
+        private Button _pixelateHeader;
+        private VBoxContainer _pixelateContent;
+        private HSlider _pixelateSizeSlider;
         private readonly AlgorithmSettings _settings;
 
         public delegate void AlgorithmSettingsChangedEventHandler(AlgorithmSettings settings);
         public event AlgorithmSettingsChangedEventHandler OnAlgorithmSettingsChanged;
 
         public AlgorithmPanelController(
-            (Button header, VBoxContainer content)[] sections,
+            Button lineContoursHeader,
+            VBoxContainer lineContoursContent,
             HSlider contourThresholdSlider,
+            Button voronoiHeader,
+            VBoxContainer voronoiContent,
             HSlider voronoiPointsSlider,
+            Button stipplingHeader,
+            VBoxContainer stipplingContent,
             HSlider stipplingDensitySlider,
+            Button pixelateHeader,
+            VBoxContainer pixelateContent,
             HSlider pixelateSizeSlider)
         {
-            _headers = sections.Select(s => s.header).ToArray();
-            _contents = sections.Select(s => s.content).ToArray();
+            _lineContoursHeader = lineContoursHeader;
+            _lineContoursContent = lineContoursContent;
             _contourThresholdSlider = contourThresholdSlider;
+            _voronoiHeader = voronoiHeader;
+            _voronoiContent = voronoiContent;
             _voronoiPointsSlider = voronoiPointsSlider;
+            _stipplingHeader = stipplingHeader;
+            _stipplingContent = stipplingContent;
             _stipplingDensitySlider = stipplingDensitySlider;
+            _pixelateHeader = pixelateHeader;
+            _pixelateContent = pixelateContent;
             _pixelateSizeSlider = pixelateSizeSlider;
             _settings = new AlgorithmSettings();
 
@@ -36,11 +56,10 @@ namespace LineForge.UI
 
         private void ConnectSignals()
         {
-            for (int i = 0; i < _headers.Length; i++)
-            {
-                int index = i; // Capture for lambda
-                _headers[i].Pressed += () => ToggleSectionVisibility(index);
-            }
+            _lineContoursHeader.Pressed += () => ToggleSectionVisibility(_lineContoursContent, _lineContoursHeader);
+            _voronoiHeader.Pressed += () => ToggleSectionVisibility(_voronoiContent, _voronoiHeader);
+            _stipplingHeader.Pressed += () => ToggleSectionVisibility(_stipplingContent, _stipplingHeader);
+            _pixelateHeader.Pressed += () => ToggleSectionVisibility(_pixelateContent, _pixelateHeader);
 
             _contourThresholdSlider.ValueChanged += OnContourThresholdChanged;
             _voronoiPointsSlider.ValueChanged += OnVoronoiPointsChanged;
@@ -48,11 +67,11 @@ namespace LineForge.UI
             _pixelateSizeSlider.ValueChanged += OnPixelateSizeChanged;
         }
 
-        private void ToggleSectionVisibility(int index)
+        private void ToggleSectionVisibility(VBoxContainer content, Button header)
         {
-            _contents[index].Visible = !_contents[index].Visible;
-            string text = _headers[index].Text;
-            _headers[index].Text = _contents[index].Visible ? 
+            content.Visible = !content.Visible;
+            string text = header.Text;
+            header.Text = content.Visible ? 
                 text.Replace("▼", "▲") : 
                 text.Replace("▲", "▼");
         }
@@ -79,6 +98,11 @@ namespace LineForge.UI
         {
             _settings.PixelateSize = (int)value;
             OnAlgorithmSettingsChanged?.Invoke(_settings);
+        }
+
+        public AlgorithmSettings GetCurrentSettings()
+        {
+            return _settings;
         }
     }
 }

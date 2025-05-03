@@ -16,7 +16,7 @@ namespace LineForge.Algorithms
 
         public Image ProcessImage(Image input)
         {
-            var output = Image.Create(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
+            var output = Image.CreateEmpty(input.GetWidth(), input.GetHeight(), false, Image.Format.Rgba8);
             output.Fill(Colors.White); // Start with white background
 
             // Convert to grayscale and apply stippling
@@ -25,10 +25,10 @@ namespace LineForge.Algorithms
                 for (int y = 0; y < input.GetHeight(); y++)
                 {
                     Color pixelColor = input.GetPixel(x, y);
-                    float brightness = (pixelColor.R + pixelColor.G + pixelColor.B) / 3.0f;
+                    float brightness = (float)((pixelColor.R + pixelColor.G + pixelColor.B) / 3.0);
                     
                     // Inverse brightness (darker areas get more dots)
-                    float dotProbability = (1.0f - brightness) * _density;
+                    float dotProbability = (float)((1.0 - brightness) * _density);
                     
                     // Random sampling based on brightness and density
                     if (_random.NextDouble() < dotProbability)
