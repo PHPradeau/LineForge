@@ -24,14 +24,16 @@ namespace LineForge
 
         public override void _Ready()
         {
-            GD.Print("Main scene ready.");
+            GD.Print("Main scene ready - starting initialization...");
             InitializeServices();
             InitializeControllers();
             ConnectSignals();
+            GD.Print("Main scene initialization complete.");
         }
 
         private void InitializeServices()
         {
+            GD.Print("Initializing services...");
             _previewService = new PreviewService();
             _textRenderer = new TextRenderer();
             _fileService = new FileService(_previewService);
@@ -41,10 +43,12 @@ namespace LineForge
             // Set the preview texture rect
             var previewTextureRect = GetNode<TextureRect>("%PreviewTextureRect");
             _previewService.SetPreviewTextureRect(previewTextureRect);
+            GD.Print("Services initialized.");
         }
 
         private void InitializeControllers()
         {
+            GD.Print("Initializing controllers...");
             // Settings Panel
             var paperSizeOption = GetNode<OptionButton>("%PaperSizeOptionButton");
             var penTypeOption = GetNode<OptionButton>("%PenTypeOptionButton");
@@ -53,6 +57,14 @@ namespace LineForge
             var inputModeImage = GetNode<Button>("%InputModeImageButton");
             var inputModeCode = GetNode<Button>("%InputModeCodeButton");
 
+            if (paperSizeOption == null) GD.PrintErr("paperSizeOption not found!");
+            if (penTypeOption == null) GD.PrintErr("penTypeOption not found!");
+            if (penColorPicker == null) GD.PrintErr("penColorPicker not found!");
+            if (paperColorPicker == null) GD.PrintErr("paperColorPicker not found!");
+            if (inputModeImage == null) GD.PrintErr("inputModeImage not found!");
+            if (inputModeCode == null) GD.PrintErr("inputModeCode not found!");
+
+            GD.Print("Creating SettingsPanelController...");
             _settingsPanelController = new SettingsPanelController(
                 paperSizeOption,
                 penTypeOption,
@@ -61,6 +73,7 @@ namespace LineForge
                 inputModeImage,
                 inputModeCode
             );
+            GD.Print("SettingsPanelController created.");
 
             // Algorithm Panel
             _algorithmPanelController = new AlgorithmPanelController(

@@ -1,0 +1,17 @@
+config_version=5
+
+[application]
+
+config/name="Lineforge (4.4)"
+run/main_scene="uid://c6w7f6h5g4k3f"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="Lineforge"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

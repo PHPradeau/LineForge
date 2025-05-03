@@ -39,18 +39,20 @@ namespace LineForge.UI
 
         private void PopulateDropdowns()
         {
-            // Populate paper sizes
+            GD.Print("Populating paper size dropdown...");
             _paperSizeOptionButton.Clear();
             foreach (var size in PaperSettings.PaperSizes.Keys.OrderBy(s => s))
             {
+                GD.Print($"Adding paper size: {size}");
                 _paperSizeOptionButton.AddItem(size);
             }
             _paperSizeOptionButton.Selected = _paperSizeOptionButton.GetItemIndex("A4");
 
-            // Populate pen types
+            GD.Print("Populating pen type dropdown...");
             _penTypeOptionButton.Clear();
             foreach (var penType in PaperSettings.PenTypes.Keys.OrderBy(p => p))
             {
+                GD.Print($"Adding pen type: {penType}");
                 _penTypeOptionButton.AddItem(penType);
             }
             _penTypeOptionButton.Selected = _penTypeOptionButton.GetItemIndex("Sakura Micron 01");

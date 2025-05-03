@@ -1,0 +1,381 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6w7f6h5g4k3f"]
+
+[ext_resource type="Script" uid="uid://bw1bo8dj8t48a" path="res://scripts/Main.cs" id="1_main_script"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main_script")
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopHBox" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.9
+
+[node name="LeftPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/LeftPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 3
+
+[node name="LeftPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PaperSizeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PaperSizeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperSizeGrid"]
+layout_mode = 2
+text = "Paper Size:"
+
+[node name="PaperSizeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperSizeGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PenTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PenTypeLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
+layout_mode = 2
+text = "Pen Type:"
+
+[node name="PenTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenTypeGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PenColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PenColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
+layout_mode = 2
+text = "Pen Color:"
+
+[node name="PenColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PenColorGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PaperColorGrid" type="GridContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="PaperColorLabel" type="Label" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
+layout_mode = 2
+text = "Paper Color:"
+
+[node name="PaperColorPickerButton" type="ColorPickerButton" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/PaperColorGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(1, 1, 1, 1)
+
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+
+[node name="InputModeHBox" type="HBoxContainer" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent"]
+layout_mode = 2
+alignment = 1
+
+[node name="InputModeImageButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "Image"
+
+[node name="InputModeCodeButton" type="Button" parent="MainVBox/TopHBox/LeftPanel/ScrollContainer/LeftPanelContent/InputModeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "Code"
+
+[node name="CenterPreview" type="PanelContainer" parent="MainVBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="PreviewTextureRect" type="TextureRect" parent="MainVBox/TopHBox/CenterPreview"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightPanel" type="PanelContainer" parent="MainVBox/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainVBox/TopHBox/RightPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 3
+
+[node name="RightPanelContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AlgoFXLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Algorithm & Effects"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+[node name="LineContoursHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Line Contours ▼"
+flat = true
+alignment = 0
+
+[node name="LineContoursContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ContourThresholdLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursContent"]
+layout_mode = 2
+text = "Threshold:"
+
+[node name="ContourThresholdSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/LineContoursContent"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="VoronoiHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Voronoi ▼"
+flat = true
+alignment = 0
+
+[node name="VoronoiContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VoronoiPointsLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiContent"]
+layout_mode = 2
+text = "Points:"
+
+[node name="VoronoiPointsSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/VoronoiContent"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 10.0
+max_value = 1000.0
+value = 100.0
+
+[node name="StipplingHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stippling ▼"
+flat = true
+alignment = 0
+
+[node name="StipplingContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StipplingDensityLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/StipplingContent"]
+layout_mode = 2
+text = "Density:"
+
+[node name="StipplingDensitySlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/StipplingContent"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="PixelateHeader" type="Button" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pixelate ▼"
+flat = true
+alignment = 0
+
+[node name="PixelateContent" type="VBoxContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PixelateSizeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PixelateContent"]
+layout_mode = 2
+text = "Size:"
+
+[node name="PixelateSizeSlider" type="HSlider" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PixelateContent"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 50.0
+value = 10.0
+
+[node name="HSeparator2" type="HSeparator" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+
+[node name="TextLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Text Tool"
+horizontal_alignment = 1
+
+[node name="TextContentGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="TextContentLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextContentGrid"]
+layout_mode = 2
+text = "Content:"
+
+[node name="TextContentLineEdit" type="LineEdit" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/TextContentGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter text..."
+
+[node name="FontTypeGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="FontTypeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/FontTypeGrid"]
+layout_mode = 2
+text = "Font:"
+
+[node name="FontTypeOptionButton" type="OptionButton" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/FontTypeGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SizeGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="SizeLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/SizeGrid"]
+layout_mode = 2
+text = "Size:"
+
+[node name="SizeSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/SizeGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1000.0
+value = 12.0
+
+[node name="PositionGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 4
+
+[node name="PositionLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
+layout_mode = 2
+text = "Position:"
+
+[node name="PositionXLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
+layout_mode = 2
+text = "X:"
+
+[node name="PositionXSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+
+[node name="PositionYLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
+layout_mode = 2
+text = "Y:"
+
+[node name="PositionYSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/PositionGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10000.0
+step = 0.1
+
+[node name="RotationGrid" type="GridContainer" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent"]
+layout_mode = 2
+columns = 2
+
+[node name="RotationLabel" type="Label" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/RotationGrid"]
+layout_mode = 2
+text = "Rotation (°):"
+
+[node name="RotationSpinBox" type="SpinBox" parent="MainVBox/TopHBox/RightPanel/ScrollContainer/RightPanelContent/RotationGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -360.0
+max_value = 360.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="BottomBar" type="PanelContainer" parent="MainVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 8
+size_flags_stretch_ratio = 0.1
+
+[node name="BottomBarContent" type="HBoxContainer" parent="MainVBox/BottomBar"]
+layout_mode = 2
+alignment = 1
+
+[node name="ExportLabel" type="Label" parent="MainVBox/BottomBar/BottomBarContent"]
+layout_mode = 2
+text = "Export:"
+
+[node name="SaveSVGButton" type="Button" parent="MainVBox/BottomBar/BottomBarContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Save as .SVG"
+
+[node name="ExportGCodeButton" type="Button" parent="MainVBox/BottomBar/BottomBarContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Export G-code"
+
+[node name="VSeparator" type="VSeparator" parent="MainVBox/BottomBar/BottomBarContent"]
+layout_mode = 2
+
+[node name="Effects3DButton" type="Button" parent="MainVBox/BottomBar/BottomBarContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "3D Effects"
+
+[node name="VSeparator2" type="VSeparator" parent="MainVBox/BottomBar/BottomBarContent"]
+layout_mode = 2
+
+[node name="RotateCanvasButton" type="Button" parent="MainVBox/BottomBar/BottomBarContent"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Rotate Canvas"
+
+[node name="ImageFileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a File"
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
