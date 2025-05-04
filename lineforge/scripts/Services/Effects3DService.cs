@@ -34,7 +34,7 @@ namespace LineForge.Services
         public void ApplyHeightMap(Image sourceImage, PaperSettings settings)
         {
             // Generate height map based on image intensity
-            _currentHeightMap = sourceImage.Duplicate();
+            _currentHeightMap = sourceImage.Duplicate() as Image;
             _currentHeightMap.Convert(Image.Format.L8); // Convert to grayscale
 
             // Adjust height map based on pen properties
@@ -59,7 +59,7 @@ namespace LineForge.Services
         {
             _lightingMaterial.SetShaderParameter("light_direction", lightDirection.Normalized());
             _lightingMaterial.SetShaderParameter("light_color", lightColor);
-            _lightingMaterial.SetShaderParameter("height_map", _currentHeightMap);
+            _lightingMaterial.SetShaderParameter("height_map", _currentHeightMap as Resource);
         }
 
         public Material GetHeightMapMaterial()

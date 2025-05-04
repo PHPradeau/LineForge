@@ -31,7 +31,7 @@ namespace LineForge.Services
 
         public void SetInputImage(Image newImage)
         {
-            _currentImage = newImage;
+            _currentImage = newImage.Duplicate() as Image;
             UpdatePreview(new PaperSettings(), new AlgorithmSettings(), new TextSettings());
         }
 
@@ -44,7 +44,7 @@ namespace LineForge.Services
             }
 
             // Create a working copy of the image
-            var processedImage = _currentImage.Duplicate();
+            var processedImage = _currentImage.Duplicate() as Image;
 
             // Create a list to store the active effects
             var effects = new List<IImageEffect>();
@@ -95,7 +95,7 @@ namespace LineForge.Services
 
         public Image GetCurrentImage()
         {
-            return _currentImage?.Duplicate();
+            return _currentImage?.Duplicate() as Image;
         }
 
         private void ApplyPaperColor(Image image, Color paperColor)

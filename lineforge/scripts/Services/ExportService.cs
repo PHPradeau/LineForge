@@ -18,7 +18,7 @@ namespace LineForge.Services
             _previewService = previewService;
         }
 
-        public async void ExportToSVG(PaperSettings paperSettings, AlgorithmSettings algoSettings, TextSettings textSettings)
+        public void ExportToSVG(PaperSettings paperSettings, AlgorithmSettings algoSettings, TextSettings textSettings)
         {
             var fileDialog = new FileDialog
             {
@@ -27,7 +27,8 @@ namespace LineForge.Services
                 Filters = new string[] { "*.svg" }
             };
 
-            fileDialog.FileSelected += (string path) =>
+            fileDialog.FileSelected += OnSVGFileSelected;
+            void OnSVGFileSelected(string path)
             {
                 try
                 {
@@ -39,12 +40,12 @@ namespace LineForge.Services
                 {
                     GD.PrintErr($"Error exporting SVG: {e.Message}");
                 }
-            };
+            }
 
             fileDialog.Show();
         }
 
-        public async void ExportToGCode(PaperSettings paperSettings, AlgorithmSettings algoSettings, TextSettings textSettings)
+        public void ExportToGCode(PaperSettings paperSettings, AlgorithmSettings algoSettings, TextSettings textSettings)
         {
             var fileDialog = new FileDialog
             {
@@ -53,7 +54,8 @@ namespace LineForge.Services
                 Filters = new string[] { "*.gcode" }
             };
 
-            fileDialog.FileSelected += (string path) =>
+            fileDialog.FileSelected += OnGCodeFileSelected;
+            void OnGCodeFileSelected(string path)
             {
                 try
                 {
@@ -65,7 +67,7 @@ namespace LineForge.Services
                 {
                     GD.PrintErr($"Error exporting G-code: {e.Message}");
                 }
-            };
+            }
 
             fileDialog.Show();
         }
@@ -114,20 +116,20 @@ namespace LineForge.Services
             gcode.AppendLine($"; Paper size: {paperSettings.Size} ({PaperSettings.PaperSizes[paperSettings.Size].X}mm x {PaperSettings.PaperSizes[paperSettings.Size].Y}mm)");
             gcode.AppendLine($"; Pen type: {paperSettings.PenType}");
             gcode.AppendLine($"; Line width: {penProperties.Width}mm");
-            gcode.AppendLine($"; Pressure range: {penProperties.Pressure}");
+            gcode.AppendLine($"; Pressure: {penProperties.Pressure}");
 
             // Initialize
             gcode.AppendLine("G21 ; Set units to millimeters");
             gcode.AppendLine("G90 ; Use absolute coordinates");
             gcode.AppendLine("G92 X0 Y0 Z0 ; Set current position as home");
-            gcode.AppendLine($"M280 P0 S{penProperties.Pressure.Min} ; Set initial pen pressure");
+            gcode.AppendLine($"M280 P0 S{penProperties.Pressure * 0.5f} ; Set initial pen pressure");
             
             // Convert current preview to G-code movements
             var paths = ImageToPlotterPaths(_previewService.GetCurrentImage());
             foreach (var path in paths)
             {
                 // Pen up with minimum pressure
-                gcode.AppendLine($"M280 P0 S{penProperties.Pressure.Min} ; Pen up");
+                gcode.AppendLine($"M280 P0 S{penProperties.Pressure * 0.2f} ; Pen up");
                 gcode.AppendLine("G1 Z5 F1000");
                 
                 // Move to start
@@ -135,7 +137,7 @@ namespace LineForge.Services
                 
                 // Pen down with maximum pressure
                 gcode.AppendLine("G1 Z0 F1000");
-                gcode.AppendLine($"M280 P0 S{penProperties.Pressure.Max} ; Pen down");
+                gcode.AppendLine($"M280 P0 S{penProperties.Pressure} ; Pen down");
                 
                 // Draw path
                 for (int i = 1; i < path.Count; i++)
@@ -145,7 +147,7 @@ namespace LineForge.Services
             }
 
             // Return to home
-            gcode.AppendLine($"M280 P0 S{penProperties.Pressure.Min} ; Pen up");
+            gcode.AppendLine($"M280 P0 S{penProperties.Pressure * 0.2f} ; Pen up");
             gcode.AppendLine("G1 Z5 F1000");
             gcode.AppendLine("G1 X0 Y0 F3000 ; Return to home");
 
